@@ -15,3 +15,9 @@ OBS:More informations is on the second video from the course.
 5. Select Kinesis Firehose as the use case.
 6. Grant S3FullAcess permission
 7. Name it.
+
+> create stream 
+
+1. Go to roles in IAM -> firehoseDeliveryRole 
+2. COPY the -> Role ARN to use BOTO3
+3. 

@@ -1,6 +1,6 @@
 def invoke_lamb(name, arg = "", type = "Event"):
-    region = "us-east-1"
-    account = "?"
+    region = ""
+    account = ""
     client = boto3.client("lambda")
     
     if type == "Event":

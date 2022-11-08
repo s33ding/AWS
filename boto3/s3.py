@@ -88,3 +88,12 @@ s3.upload_file(Filename= fileSrcHtml, Key=htmlFileName, Bucket=bucketName,
  ExtraArgs = {'ContentType': 'text/html', 'ACL': 'public-read'})
 
 print("http://{}.s3.amazonaws.com/{}".format(bucketName, htmlFileName))
+
+#%%
+
+# copy_obj
+def copy_obj(bucket_orig = "", obj_orig = "", bucket_dest = "", obj_dest = ""):
+    s3 = boto3.resource('s3')
+    copy_source = {'Bucket': bucket_orig, 'Key': obj_orig}
+    bucket = s3.Bucket(bucket_dest)
+    bucket.copy(copy_source, obj_dest)

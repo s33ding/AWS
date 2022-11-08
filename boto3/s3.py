@@ -97,3 +97,18 @@ def copy_obj(bucket_orig = "", obj_orig = "", bucket_dest = "", obj_dest = ""):
     copy_source = {'Bucket': bucket_orig, 'Key': obj_orig}
     bucket = s3.Bucket(bucket_dest)
     bucket.copy(copy_source, obj_dest)
+
+def check_if_obj_exist(bucket_nm, key_nm):
+    s3 = boto3.resource('s3', region_name='us-east-1')
+    try:
+        s3.Object(bucket_nm, key_nm).load()
+    except botocore.exceptions.ClientError as e:
+        if e.response['Error']['Code'] == "404":
+        # The object does not exist.
+            return False
+        else:
+        # Something else has gone wrong.
+            raise
+    else:
+    # The object does exist.
+        return key

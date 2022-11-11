@@ -6,4 +6,4 @@ Boto3 is the name of the Python SDK for AWS. It allows you to directly create, u
 
 ![BOTO3](https://miro.medium.com/max/720/1*uNoiNd5PbcdzErdMhRhNlQ.png)
 
-I am working to put more things in this repository not related to directly do Boto3, like some templates for AWS Lambda.
+I am working to put more things in this repository not related directly to Boto3, like some templates for AWS Lambda.

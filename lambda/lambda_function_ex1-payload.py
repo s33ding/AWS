@@ -12,8 +12,5 @@ def lambda_handler(event, context):
         file_name='x.json', 
         folder_name="folder-ex", 
         string=json.dumps(dct, indent=4))
-
- 
-    client = boto3.client("lambda")
   
     return {'statusCode': 200,'body': json.dumps("OK")}

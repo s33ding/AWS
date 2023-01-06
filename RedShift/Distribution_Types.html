@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+	<head></head>
+	<body style="background-color: beige;">
+                <a href="https://docs.aws.amazon.com/redshift/latest/dg/t_Sorting_data.html"><center style="color: black;"><h1>DISTRIBUTION_TYPES</h1><br></center></a>
+		<p><b>GOALS</b></p>	
+		<ul>
+			<li>
+				<ul>Ideally, each node works as hard as every other.</ul>
+				<ul>Minimize data movement</ul>
+			</li>
+	     </ul>		
+		<p><b>AUTO distribution</b><br><br>
+With AUTO distribution, Amazon Redshift assigns an optimal distribution style based on the size of the table data. For example, if AUTO distribution style is specified, Amazon Redshift initially assigns the ALL distribution style to a small table. When the table grows larger, Amazon Redshift might change the distribution style to KEY, choosing the primary key (or a column of the composite primary key) as the distribution key. If the table grows larger and none of the columns are suitable to be the distribution key, Amazon Redshift changes the distribution style to EVEN. The change in distribution style occurs in the background with minimal impact to user queries.
+
+To view actions that Amazon Redshift automatically performed to alter a table distribution key, see SVL_AUTO_WORKER_ACTION. To view current recommendations regarding altering a table distribution key, see SVV_ALTER_TABLE_RECOMMENDATIONS.
+
+To view the distribution style applied to a table, query the PG_CLASS_INFO system catalog view. For more information, see Viewing distribution styles. If you don't specify a distribution style with the CREATE TABLE statement, Amazon Redshift applies AUTO distribution. </p>
+
+	<ul>
+		<li><p><b>EVEN:</b></p>
+			<p>The leader node distributes the rows across the slices in a round-robin fashion, regardless of the values in any particular column. EVEN distribution is <strong style="color:red">appropriate when a table doesn't participate in joins</strong>. It's also appropriate <strong style="color: red;"> when there isn't a clear choice between KEY distribution and ALL distribution</strong>.</p></li>
+		<li><p><b>KEY:</b></p>
+			<p>The <strong = style="color: red;"> are distributed according to the values in one column</strong>. The leader node places matching values on the same node slice. If you distribute a pair of tables on the joining keys, the leader node collocates the rows on the slices according to the values in the joining columns. This way, <strong style="color: red;">values from the common columns are physically stored together</strong></p></li>
+		<li><p><b>ALL</b></p>
+			<p>ALL distribution <strong style="color: red;"> the storage required by the number of nodes in the cluster</strong>, and so it takes much longer to load, update, or insert data into multiple tables. ALL distribution is <strong style="color: red;">appropriate only for relatively slow moving tables;</strong> that is, tables that are not updated frequently or extensively. Because the cost of redistributing small tables during a query is low, there isn't a significant benefit to define small dimension tables as DISTSTYLE ALL. </p>
+		</li>
+	</ul>
+	
+	<center><img src="https://community.microstrategy.com/servlet/rtaImage?eid=ka044000000kPbv&feoid=00N44000006DfHE&refid=0EM440000002M9F" width="800" height="300"></img></center>
+	</body>
+</html>

@@ -1,0 +1,43 @@
+
+<!DOCTYPE html>
+<html>
+	<head></head>
+	<body style="background-color: beige;">
+		<a href="https://docs.aws.amazon.com/redshift/latest/dg/t_Sorting_data.html"><center style="color: black;"><h1>SORT KEYS</h1><br></center></a>
+		<p>When you create a table, you can alternatively define one or more of its columns as sort keys. When data is initially loaded into the empty table, the rows are stored on disk in sorted order.</p>	
+        <p><b>HOW IT WORKS?</b></p>
+        <p>Sorting enables efficient handling of range-restricted predicates. Amazon Redshift stores columnar data in 1 MB disk blocks. The min and max values for each block are stored as part of the metadata. If a query uses a range-restricted predicate, the query processor can use the min and max values to rapidly skip over large numbers of blocks during table scans.</p>
+		<p><b>TYPE OF SORT KEYS</b></p>
+        <ul>
+			<li>
+				<p><b>Compound sort key</b></p>
+                    <p>A compound key is made up of all of the columns listed in the sort key definition, in the order they are listed. A compound sort key is <strong style="color: red;"> most useful when a query's filter applies conditions, such as filters and joins, that use a prefix of the sort keys</strong>. The performance benefits of compound sorting decrease when queries depend only on secondary sort columns, without referencing the primary columns. Compound Keys<strong style="color: red"> is the default sort type.</strong></p></ul>
+                    <p> Compound sort keys might speed up joins, GROUP BY and ORDER BY operations, and window functions that use PARTITION BY and ORDER BY. For example, a merge join, which is often faster than a hash join, is feasible when the data is distributed and presorted on the joining columns. Compound sort keys also help improve compression. </p>
+            </li>
+        </ul>
+        <ul>
+            <li>
+                    <p><b>Interleaved sort key</b></p> 
+                    <p>An interleaved sort gives equal weight to each column, or subset of columns, in the sort key. <strong style="color: red;"> If multiple queries use different columns for filters, then you can often improve performance for those queries by using an interleaved sort style </strong>. When a query uses restrictive predicates on secondary sort columns, interleaved sorting significantly improves query performance as compared to compound sorting.</p>
+			</li>
+	    </ul>		
+
+		<p><b>VACCUMN REINDEX</b></p>
+        <ul>
+			<li>
+				<p>As you add rows to a sorted table that already contains data, performance might deteriorate over time. This deterioration occurs for both compound and interleaved sorts, but it has a greater effect on interleaved tables. A VACUUM restores the sort order, but the operation can take longer for interleaved tables because merging new interleaved data might involve modifying every data block.
+
+When tables are initially loaded, Amazon Redshift analyzes the distribution of the values in the sort key columns and uses that information for optimal interleaving of the sort key columns. As a table grows, the distribution of the values in the sort key columns can change, or skew, especially with date or timestamp columns. If the skew becomes too large, performance might be affected. To re-analyze the sort keys and restore performance, run the VACUUM command with the REINDEX key word. Because it needs to take an extra analysis pass over the data, VACUUM REINDEX can take longer than a standard VACUUM for interleaved tables. To view information about key distribution skew and last reindex time, query the SVV_INTERLEAVED_COLUMNS system view.
+
+For more information about how to determine how often to run VACUUM and when to run a VACUUM REINDEX, see Deciding whether to reindex.  
+            </li>
+        </ul>
+        <ul>
+            <li>
+                    <p><b>Interleaved sort key</b></p> 
+                    <p>An interleaved sort gives equal weight to each column, or subset of columns, in the sort key. <strong style="color: red;"> If multiple queries use different columns for filters, then you can often improve performance for those queries by using an interleaved sort style </strong>. When a query uses restrictive predicates on secondary sort columns, interleaved sorting significantly improves query performance as compared to compound sorting.</p>
+			</li>
+	    </ul>		
+	<center><img src="https://d2908q01vomqb2.cloudfront.net/b6692ea5df920cad691c20319a6fffd7a4a766b8/2016/12/05/o_redshift_tables_3_1.gif" width="3 00" height="300"><p>Image source: <a href="https://aws.amazon.com/blogs/big-data/amazon-redshift-engineerings-advanced-table-design-playbook-compound-and-interleaved-sort-keys/" width="800" height="300">AWS</a></p></img></center>
+    </body>
+</html>

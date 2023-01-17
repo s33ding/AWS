@@ -6,7 +6,7 @@ import os
 
 
 bucket_name =  input("BUCKET NAME:")
-obj_key =  input("BUCKET NAME:")
+obj_key =  input("OBJECT KEY NAME:")
 
 def s3_upload_file(bucket_name, file_name, obj_key):
 

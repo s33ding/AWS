@@ -1,4 +1,6 @@
+import sys
 import boto3
+import pandas as pd
 import json
 import os
 
@@ -14,8 +16,8 @@ response = s3.list_objects_v2(Bucket=bucket_nm, Prefix=prefix_str)
 
 files = [obj['Key'] for obj in response.get("Contents")]
 
-for index,key_obj in enumerate(files):
-    print(f"[{index}] - {key_obj}")
-    response = s3.delete_object(Bucket=bucket_nm,Key=key_obj)
+for key_obj in files:
+    print(f"{key_obj}")
+    #response = s3.delete_object(Bucket=bucket_nm,Key=key_obj)
 
 

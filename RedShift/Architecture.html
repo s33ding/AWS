@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+   <head></head>
+   <body style="background-color: beige;">
+                <a href="https://docs.aws.amazon.com/redshift"><center style="color: black;"><h1>Architecture</h1><br></center></a>
+		<h5>MMP</h5>
+                <p>Amazon Redshift distributes the rows of a table to the compute nodes so that data can be processed in parallel. With MPP, you can quickly run queries that operate on large amounts of data. Multiple compute nodes handle all query processing. This leads to final-result aggregation, with each core of each node running the same compiled query segments on portions of the entire data. By selecting an appropriate distribution key for each table, you can optimize the distribution of data to balance the workload and minimize movement of data from node to node.</p>
+		<h5>COLUMNAR STORAGE</h5>
+		<p>Amazon Redshift uses columnar storage, which is optimal for analytical processing, where each data block stores values of a single column for multiple rows. Amazon Redshift transparently converts data to columnar storage for each column. Columnar storage optimizes analytic query performance by significantly reducing overall disk I/O requirements and the amount of data required to be loaded into memory from disk. Additionally, when data is stored in columnar fashion, compression algorithms work more efficiently. This further reduces disk space and I/O because each block holds the homogeneous type of data.</p>
+		<h5>DATA INGESTION</h5>
+		<ul>
+			<li>Using the COPY command: This is a best practice for loading data into Amazon Redshift. The COPY command loads data in parallel from Amazon S3, Amazon EMR, Amazon DynamoDB, or from multiple data sources on any remote hosts accessible through an SSH connection.
+</li>
+			<li>Integration with third-party ETL tools: Amazon Redshift integrates with several ETL tools to load data into databases. Some partner tools are integrated into the Redshift cluster details page to help speed up your data onboarding into your Amazon Redshift data warehouse with AWS Partner applications.</li>
+	</ul>
+	
+	<h5>DATA ACCESS</h5>
+		<li>Amazon Redshift Query editor v2 is a separate web-based SQL client application that you use to author and run queries on your Amazon Redshift data warehouse. You can open query editor v2 right from the Amazon Redshift console on a new tab in your web browser. You can use it to author and run queries on your Amazon Redshift data warehouse. You can also get in-place visual analysis of query results, all in one place and with no data download required. You can also save queries and share results and analyses between users.</li>
+	<li>JDBC, Python, and ODBC connections can be used to connect to SQL client tools and third-party reporting and visualization tools, such as Tableau and ThoughtSpot.</li>
+	<li>QuickSight, which is a cloud-based BI service, can be used to deliver clear insights, charts, and visualizations by connecting to your Redshift cluster.
+Amazon Redshift Data API can be used to access your Amazon Redshift database. Using this API, you can access Amazon Redshift data with web services–based applications, including Lambda, SageMaker notebooks, and AWS Cloud9.</li>
+	</li>Amazon Redshift RSQL is a command-line client for interacting with Redshift clusters and databases. You can connect to a Redshift cluster, describe database objects, query data, and view query results in various output formats.</li>
+		</ul>
+    </body>
+</html>

@@ -13,7 +13,10 @@ client = boto3.client('ssm',
                       aws_secret_access_key=cred.get('passwd')
                       )
 
-paramter_name = sys.argv[1]
+try:
+    paramter_name = sys.argv[1]
+except:
+    paramter_name = input("PARAMTER_NAME: ") 
 request = client.get_parameter(Name = paramter_name, WithDecryption=True)
 result = request['Parameter']['Value']
 print(result)

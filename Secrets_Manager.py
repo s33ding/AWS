@@ -5,7 +5,7 @@ import mysql.connector
 import json
 import os
 
-with open (os.environ["AWS_CRED"], "r") as f:
+with open (os.environ["AWS_KEY"], "r") as f:
     cred = json.load(f)
 
 session = boto3.session.Session()

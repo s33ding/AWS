@@ -7,17 +7,17 @@ personal_aws_key=AWS_KEY2
 work_aws_key=AWS_KEY
 
 # Prompt user to select AWS key
-echo "Select an AWS key:"
-echo "  0) work_aws_key (work)"
-echo "  1) personal_aws_key (personal)"
+echo "☁️  Select an AWS key:"
+echo "  0) Work AWS key"
+echo "  1) Personal AWS key"
 read -p "> " aws_key_choice
 
 if [ "$aws_key_choice" -eq 0 ]; then
   # Use work AWS key
-  aws_key=$AWS_KEY
+  aws_key=$work_aws_key
 elif [ "$aws_key_choice" -eq 1 ]; then
   # Use personal AWS key
-  aws_key=$AWS_KEY2
+  aws_key=$personal_aws_key
 else
   echo "Invalid choice. Exiting."
   exit 1
@@ -37,7 +37,7 @@ aws_secret_access_key = $secret"
 
 touch ~/.aws/credentials
 echo -e $string > $AWS_CRED
-read -p 'TOKEN: ' -s TOKEN
+read -p '☁️  TOKEN: ' -s TOKEN
 
 aws sts get-session-token --duration-seconds 4600 --serial-number  $arn --token-code $TOKEN > $AWS_TEMP_CRED
 
@@ -53,6 +53,3 @@ aws_security_token=$(echo "$aws" | jq -r '.SessionToken')" > "$AWS_CRED"
 # Display a fun message instead of the sensitive information
 echo "Access granted."
 echo "May the Bash be with you! 🚀👨💻🔥"
-
-aws s3 ls
-rm -r $AWS_TEMP_CRED

@@ -1,4 +1,5 @@
 #!/bin/bash
+#source: https://www.youtube.com/watch?v=Xv54k3TGoHM 
 
 # Personal AWS key
 personal_aws_key=AWS_KEY2

@@ -4,10 +4,13 @@ import pandas as pd
 import json
 import os
 
-with open (os.environ['AWS_KEY'], "r") as f:
+with open (os.environ['AWS_KEY2'], "r") as f:
     cred = json.load(f)
 
-s3 = boto3.client('s3', region_name='us-east-1',aws_access_key_id=cred.get("id"), aws_secret_access_key=cred.get("secret"))
+s3 = boto3.client('s3', 
+                 region_name='us-east-1',
+                 aws_access_key_id=cred.get("id"), 
+                 aws_secret_access_key=cred.get("secret"))
 
 bucket_nm = input("BUCKET: ")
 prefix_str = input("PREFIX: ")

@@ -4,7 +4,7 @@ import pandas as pd
 import json
 import os
 
-with open (os.environ['AWS_CRED'], "r") as f:
+with open (os.environ['AWS_KEY2'], "r") as f:
     cred = json.load(f)
 
 # Initialize the Amazon Recognition client

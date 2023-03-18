@@ -49,4 +49,3 @@ aws_security_token=$(echo "$aws" | jq -r '.SessionToken')" > "$AWS_CRED"
 echo "Access granted."
 echo "May the Bash be with you! 🚀👨💻🔥"
 aws s3 ls 
-rm -r $AWS_TEMP_CRED

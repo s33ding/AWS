@@ -17,6 +17,7 @@ def retrieves_table_details(database_name, table_name):
    glue_client = session.client('glue')
    try:
       response = glue_client.get_table(DatabaseName = database_name, Name = table_name)
+      response = response["Table"]["StorageDescriptor"]["Columns"]
       return response
    except ClientError as e:
       raise Exception("boto3 client error in retrieves_table_details: " + e.__str__())
@@ -26,7 +27,6 @@ def retrieves_table_details(database_name, table_name):
 database_name = input("database: ")
 table_name = input("table: ")
 
-res = retrieves_table_details(database_name, table_name)
-schema = res["Table"]["StorageDescriptor"]["Columns"]
-print(schema)
+tbl_schema = retrieves_table_details(database_name, table_name)
+print(tbl_schema)
 

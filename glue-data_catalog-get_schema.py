@@ -27,5 +27,6 @@ database_name = input("database: ")
 table_name = input("table: ")
 
 res = retrieves_table_details(database_name, table_name)
-res["Table"]["StorageDescriptor"]["Columns"]
+schema = res["Table"]["StorageDescriptor"]["Columns"]
+print(schema)
 

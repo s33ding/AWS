@@ -1,7 +1,6 @@
 #!/bin/bash
 #source: https://www.youtube.com/watch?v=Xv54k3TGoHM 
 
-
 # Prompt user to select AWS key
 echo "☁️  Select an AWS key:"
 echo "  0) Work AWS key"
@@ -23,29 +22,37 @@ fi
 id=$(jq -r '.id' "$aws_key")
 secret=$(jq -r '.secret' "$aws_key")
 arn=$(jq -r '.arn' "$aws_key")
-#
+
 # Create formatted string
 string="[default]\n\
-aws_access_key_id = $id\n\
-aws_secret_access_key = $secret"
+aws_access_key_id=$id\n\
+aws_secret_access_key=$secret"
 # Store in file
-
 touch ~/.aws/credentials
 echo -e $string > $AWS_CRED
+
+# Prompt for MFA token
 read -p '☁️  TOKEN: ' -s TOKEN
 
-aws sts get-session-token --duration-seconds 4600 --serial-number  $arn --token-code $TOKEN > $AWS_TEMP_CRED
+# Get temporary credentials and format as JSON with new key names
+aws=$(aws sts get-session-token --duration-seconds 18000 --serial-number $arn --token-code $TOKEN --output json)
+id=$(echo "$aws" | jq -r '.Credentials.AccessKeyId')
+secret=$(echo "$aws" | jq -r '.Credentials.SecretAccessKey')
+token=$(echo "$aws" | jq -r '.Credentials.SessionToken')
+new_json=$(echo '{}' | jq --arg id "$id" --arg secret "$secret" --arg token "$token" '.id = $id | .secret = $secret | .token = $token')
 
-# Load temporary credentials from file
-aws=$(jq -r '.Credentials' "$AWS_TEMP_CRED")
+# Write temporary credentials JSON to file
+echo "$new_json" > "$AWS_TEMP_CRED"
 
-# Create credentials file
-echo -e "[default]\n\
-aws_access_key_id=$(echo "$aws" | jq -r '.AccessKeyId')\n\
-aws_secret_access_key=$(echo "$aws" | jq -r '.SecretAccessKey')\n\
-aws_security_token=$(echo "$aws" | jq -r '.SessionToken')" > "$AWS_CRED"
+# Set environment variables
+export AWS_ACCESS_KEY_ID="$id"
+export AWS_SECRET_ACCESS_KEY="$secret"
+export AWS_SESSION_TOKEN="$token"
 
 # Display a fun message instead of the sensitive information
 echo "Access granted."
 echo "May the Bash be with you! 🚀👨💻🔥"
-aws s3 ls 
+
+# Use AWS CLI with temporary credentials
+aws s3 ls
+

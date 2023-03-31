@@ -1,4 +1,17 @@
 import boto3
+import json
+import os
+
+# Load the AWS credentials from a file
+with open(os.environ['AWS_KEY'], 'r') as f:
+    credentials = json.load(f)
+
+# Create a Boto3 session using the loaded credentials
+session = boto3.Session(
+    aws_access_key_id=credentials['id'],
+    aws_secret_access_key=credentials['secret'],
+    aws_session_token=credentials['token'],
+    region_name='us-east-1'
 
 # Initialize the Rekognition client
 client = boto3.client('rekognition')

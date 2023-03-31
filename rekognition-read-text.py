@@ -2,14 +2,15 @@ import boto3
 import json
 import os
 
-with open (os.environ['AWS_KEY2'], "r") as f:
+with open (os.environ['AWS_KEY'], "r") as f:
     cred = json.load(f)
 
 # Initialize the Amazon Recognition client
 rekog = boto3.client('rekognition',
                  region_name='us-east-1',
-                 aws_access_key_id=cred.get("id"),
-                 aws_secret_access_key=cred.get("secret"))
+                 aws_access_key_id=aws_access_key_id,
+                 aws_secret_access_key=aws_secret_access_key,
+                 aws_session_token=aws_session_token)
 
 # Initialize the Rekognition client
 

@@ -13,6 +13,7 @@ def get_s3_client():
     session = boto3.Session(
         aws_access_key_id=credentials['id'],
         aws_secret_access_key=credentials['secret'],
+        aws_session_token=credentials['token'],
         region_name='us-east-1')
 
     # Create an S3 client using the session

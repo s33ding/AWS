@@ -9,7 +9,7 @@ read -p "> " aws_key_choice
 
 if [ "$aws_key_choice" -eq 0 ]; then
   # Use work AWS key
-  aws_key=$AWS_KEY
+  aws_key=$AWS_KEY_MAIN
 elif [ "$aws_key_choice" -eq 1 ]; then
   # Use personal AWS key
   aws_key=$AWS_KEY2

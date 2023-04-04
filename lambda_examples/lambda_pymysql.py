@@ -9,7 +9,7 @@ def exec_stmt(cmd):
     conn.close()
 
 def lambda_handler(event, context): 
-    cmd = s3_get_data(bucket_name= 'sql-cmd', object_key='cmd-ex1')
+    cmd = s3_get_data(bucket_name= 'inserts', object_key='file.sql')
     try:
         exec_stmt(cmd)
     except Exception as e:

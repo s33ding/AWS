@@ -1,4 +1,4 @@
-# vim trash
+__pycache__/
 *.swp
 *.swn
 

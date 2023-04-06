@@ -4,17 +4,12 @@ import time
 from shared_functions.create_boto3_session_from_json import create_boto3_session
 from shared_functions.argv_parser import get_input
 
-def send_log_data(log_group_name, log_stream_name, log_data):
+def create_log_stream(log_group_name, log_stream_name):
     # create a CloudWatch Logs client
     client = boto3.client('logs')
 
-    # put log event to the new log stream
-    log_event = {
-        'timestamp': int(time.time() * 1000),
-        'message': log_data
-    }
-
-    response = client.put_log_events(logGroupName=log_group_name, logStreamName=log_stream_name, logEvents=[log_event])
+    # create a new log stream
+    response = client.create_log_stream(logGroupName=log_group_name, logStreamName=log_stream_name)
 
     # return the response
     return response
@@ -27,7 +22,6 @@ session = create_boto3_session(json_file_path)
 
 log_group_name = input("Please enter the name of the CloudWatch Logs log group: ")
 log_stream_name = input("Please enter the name of the CloudWatch Logs log stream: ")
-log_data = input("Please enter the log data (separated by commas): ")
 
 resp = send_log_data(log_group_name, log_stream_name, log_data)
 print(resp)

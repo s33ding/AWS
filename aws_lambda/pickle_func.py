@@ -1,12 +1,12 @@
 import boto3
 import pickle
 
-def read_pickle_from_s3(bucket_name, file_name):
+def read_pickle_from_s3(bucket_name, key_name):
     # Create an S3 client
     s3 = boto3.client('s3')
 
     # Get the pickle file from S3
-    response = s3.get_object(Bucket=bucket_name, Key=file_name)
+    response = s3.get_object(Bucket=bucket_name, Key=key_name)
 
     # Load the pickle data from the response
     pickle_data = response['Body'].read()
@@ -18,7 +18,7 @@ def read_pickle_from_s3(bucket_name, file_name):
     return unpickled_data
 
 
-def upload_pickle_to_s3(pickle_data, bucket, key):
+def upload_pickle_to_s3(pickle_data, bucket_name, key_name):
     """
     Upload a pickle object to an S3 bucket.
 
@@ -36,4 +36,4 @@ def upload_pickle_to_s3(pickle_data, bucket, key):
     pickled_data = pickle.dumps(pickle_data)
 
     # Upload the pickled data to S3
-    s3.put_object(Bucket=bucket, Key=key, Body=pickled_data)
+    s3.put_object(Bucket=bucket_name, Key=key_name, Body=pickled_data)

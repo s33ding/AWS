@@ -23,10 +23,10 @@ def list_objects(bucket_name, folder_name_s3, search_strings):
     return lst_files
 
 # Function to check if an object exists in an S3 bucket
-def check_object_exists(bucket, key):
+def check_object_exists(bucket_name, key_name):
     try:
         s3 = boto3.client('s3')
-        s3.head_object(Bucket=bucket, Key=key)
+        s3.head_object(Bucket=bucket_name, Key=key_name)
         return True
     except:
         return False

@@ -44,10 +44,14 @@ new_json=$(echo '{}' | jq --arg id "$id" --arg secret "$secret" --arg token "$to
 # Write temporary credentials JSON to file
 echo "$new_json" > "$AWS_TEMP_CRED"
 
-# Set environment variables
-export AWS_ACCESS_KEY_ID="$id"
-export AWS_SECRET_ACCESS_KEY="$secret"
-export AWS_SESSION_TOKEN="$token"
+# Remove existing credentials from file
+> ~/.aws/credentials
+
+# Rewrite AWS default credentials file with new values
+echo "[default]" >> ~/.aws/credentials
+echo "aws_access_key_id = $id" >> ~/.aws/credentials
+echo "aws_secret_access_key = $secret" >> ~/.aws/credentials
+echo "aws_session_token = $token" >> ~/.aws/credentials
 
 # Display a fun message instead of the sensitive information
 echo "Access granted."

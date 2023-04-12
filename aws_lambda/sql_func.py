@@ -121,3 +121,28 @@ def execute_sql_queries(queries):
     finally:
         cursor.close()
         connection.close()
+
+def record_exists(table_name, condition):
+    # Establish a connection to the MySQL database
+    db_cred = get_database_credentials()
+
+    # Connect to the database
+    connection = pymysql.connect(
+        host=db_cred['host'],
+        user=db_cred['user'],
+        password=db_cred['password'],
+        charset='utf8mb4',
+        cursorclass=pymysql.cursors.DictCursor
+    )
+
+    try:
+        with connection.cursor() as cursor:
+            # Check if a record with the given condition already exists
+            query = f"SELECT COUNT(*) FROM {table_name} WHERE {condition}"
+            cursor.execute(query)
+            result = cursor.fetchone()
+
+            return result["COUNT(*)"] > 0
+    finally:
+        # Close the database connection
+        connection.close()

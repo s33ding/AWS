@@ -146,3 +146,16 @@ def record_exists(table_name, condition):
     finally:
         # Close the database connection
         connection.close()
+
+def divide_into_sublists(data, max_size):
+    """
+    Divide a list into sublists of a maximum size.
+
+    Args:
+        data (list): The list to divide into sublists.
+        max_size (int): The maximum size of each sublist.
+
+    Returns:
+        list: A list of sublists.
+    """
+    return [data[i:i+max_size] for i in range(0, len(data), max_size)]

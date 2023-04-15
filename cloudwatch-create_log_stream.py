@@ -23,7 +23,7 @@ session = create_boto3_session(json_file_path)
 log_group_name = input("Please enter the name of the CloudWatch Logs log group: ")
 log_stream_name = input("Please enter the name of the CloudWatch Logs log stream: ")
 
-resp = send_log_data(log_group_name, log_stream_name, log_data)
+resp = create_log_stream(log_group_name, log_stream_name)
 print(resp)
 
 # Use split(",") to split the log data into separate messages if needed. For example, if the input is "error, file not found, critical", splitting it into a list will give you ["error", "file not found", "critical"], which you can then send as separate log messages.

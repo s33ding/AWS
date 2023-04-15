@@ -30,3 +30,31 @@ def check_object_exists(bucket_name, key_name):
         return True
     except:
         return False
+
+def put_string_in_s3_object(bucket_name, key_name, string):
+    # Create an object key using the folder name and file name
+    object_key = f'{folder_name}/{file_name}'
+
+    # Create an S3 resource
+    s3 = boto3.resource('s3')
+
+    # Upload the string to the S3 bucket as an object
+    res = s3.Bucket(bucket_name).put_object(Key=key_name, Body=string)
+
+    # Return the result of the upload operation
+    return res
+
+def copy_s3_object_to_folder(bucket_name_src, key_name_src, bucket_name_dest, key_name_dest):
+    # Create S3 resource object
+    s3 = boto3.resource('s3')
+
+    # Specify copy source and destination
+    copy_source = {
+        'Bucket': bucket_name_src, 
+        'Key': key_name_src
+    }
+
+    # Copy object to destination folder in destination bucket
+    destination_bucket = s3.Bucket(bucket_name_dest)
+    destination_bucket.copy(copy_source, key_name_dest)
+    

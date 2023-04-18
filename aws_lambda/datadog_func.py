@@ -19,7 +19,6 @@ def load_datadog_credentials():
 def create_log_group(log_group_name):
     # Set up DataDog client
     credentials = load_datadog_credentials()
-    print(credentials)
     datadog.api_key = credentials.get('api_key')
     datadog.app_key = credentials.get('app_key')
     datadog.initialize(api_key=credentials.get('api_key'), app_key=credentials.get('app_key'))

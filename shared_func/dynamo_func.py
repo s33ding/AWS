@@ -2,11 +2,6 @@ import json
 import os
 import boto3
 
-def read_credentials_from_file(file_path):
-    with open(file_path) as f:
-        cred = json.load(f)
-        return cred.get("id"), cred.get("secret"), cred.get("token")
-
 def insert_into_dynamodb(table_name, dct):
     """
     Inserts an item into a DynamoDB table with a primary key.
@@ -18,8 +13,6 @@ def insert_into_dynamodb(table_name, dct):
     Returns:
     - None
     """
-    # Create a Boto3 session using the loaded credentials
-    session = boto3.Session(region_name='us-east-1', aws_access_key_id=aws_key, aws_secret_access_key=aws_secret, aws_session_token=aws_token)
     # Create a DynamoDB resource
     dynamodb = session.resource('dynamodb')
     # Retrieve the specified table
@@ -37,8 +30,6 @@ def list_dynamodb_tables():
     Returns:
     - List of strings representing the names of the DynamoDB tables.
     """
-    # Create a Boto3 session using the loaded credentials
-    session = boto3.Session(region_name='us-east-1', aws_access_key_id=aws_key, aws_secret_access_key=aws_secret, aws_session_token=aws_token)
     # Create a DynamoDB client
     dynamodb = session.client('dynamodb')
     # Call the list_tables method to retrieve a list of table names
@@ -48,16 +39,7 @@ def list_dynamodb_tables():
 
 def retrieve_from_dynamodb(table_name, key):
     # Create a Boto3 session using the loaded credentials
-    session = boto3.Session(region_name='us-east-1', aws_access_key_id=aws_key, aws_secret_access_key=aws_secret, aws_session_token=aws_token)
     dynamodb = session.resource('dynamodb')
     table = dynamodb.Table(table_name)
     response = table.get_item(Key=key)
     return response.get('Item')
-
-aws_key, aws_secret, aws_token = read_credentials_from_file(os.environ["AWS_KEY"])
-
-session = boto3.Session(region_name='us-east-1', aws_access_key_id=aws_key, aws_secret_access_key=aws_secret, aws_session_token=aws_token)
-
-table_list = list_dynamodb_tables()
-print(table_list)
-

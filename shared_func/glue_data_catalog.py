@@ -1,3 +1,6 @@
+import boto3
+from botocore.exceptions import ClientError
+
 # Function to retrieve table schema information from an AWS Glue catalog
 def glue_retrieves_table_details(database_name, table_name):
     try:

@@ -58,3 +58,28 @@ def copy_s3_object_to_folder(bucket_name_src, key_name_src, bucket_name_dest, ke
     destination_bucket = s3.Bucket(bucket_name_dest)
     destination_bucket.copy(copy_source, key_name_dest)
     
+def delete_all_s3_files_in_folder(bucket_name, folder_name):
+    """
+    Deletes all files in the specified S3 folder using the provided session object
+    
+    Args:
+    - bucket_name (str): the name of the S3 bucket containing the folder to delete files from
+    - folder_name (str): the name of the folder to delete files from
+    - session (boto3.Session): the session object for initializing the S3 client
+    
+    Returns:
+    - None
+    """
+    # Initialize the S3 client using the session
+    s3 = session.client('s3')
+    
+    # List all objects in the specified folder
+    response = s3.list_objects_v2(Bucket=bucket_name, Prefix=f"{folder_name}/")
+    files = [obj['Key'] for obj in response.get("Contents")]
+    
+    # Delete each file in the specified folder
+    for key_obj in files:
+        print(f"DELETING: {key_obj}")
+        response = s3.delete_object(Bucket=bucket_name,Key=key_obj)
+    
+    print("Deletion complete.")

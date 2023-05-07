@@ -3,25 +3,14 @@ import boto3
 import pandas as pd
 import json
 import os
+from shared_func.create_boto3_session_from_json import create_boto3_session
+from shared_func.s3_objects import *
+from shared_func.argv_parser import get_input
 
-with open (os.environ['AWS_KEY'], "r") as f:
-    cred = json.load(f)
+# Read the AWS credentials from the JSON file
+session = create_boto3_session()
 
-s3 = boto3.client('s3', 
-                 region_name='us-east-1',
-                 aws_access_key_id=cred.get("id"), 
-                 aws_session_token=cred.get('token'),
-                 aws_secret_access_key=cred.get("secret"))
+bucket_name = input("BUCKET: ")
+folder_name = input("FOLDER NAME(PREFIX): ")
 
-bucket_nm = input("BUCKET: ")
-prefix_str = input("PREFIX: ")
-
-response = s3.list_objects_v2(Bucket=bucket_nm, Prefix=prefix_str)
-
-files = [obj['Key'] for obj in response.get("Contents")]
-
-for key_obj in files:
-    print(f"DELETING: {key_obj}")
-    response = s3.delete_object(Bucket=bucket_nm,Key=key_obj)
-
-
+delete_all_s3_files_in_folder(bucket_name, folder_name)

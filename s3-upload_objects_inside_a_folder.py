@@ -2,17 +2,11 @@ import boto3
 import pandas as pd
 import json
 import os 
+from shared_func.create_boto3_session_from_json import create_boto3_session
+from shared_func.argv_parser import get_input
 
-with open (os.environ["AWS_KEY"], "r") as f:
-    cred = json.load(f)
-
-s3 = boto3.client(
-    's3',
-    region_name='us-east-1',
-    aws_access_key_id=cred.get('id'),
-    aws_secret_access_key=cred.get('secret'),
-    aws_session_token=cred.get('token')
-)
+# Read the AWS credentials from the JSON file
+session = create_boto3_session()
 
 bucket_name =  input("BUCKET NAME:")
 obj_key =  input("OBJECT KEY NAME:")

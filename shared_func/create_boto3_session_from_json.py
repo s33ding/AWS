@@ -1,5 +1,6 @@
 import boto3
 import json
+import os
 
 def read_aws_credentials(json_file_path):
     """
@@ -18,7 +19,7 @@ def read_aws_credentials(json_file_path):
         aws_token = credentials.get("token")
     return aws_key, aws_secret, aws_token
 
-def create_boto3_session(json_file_path):
+def create_boto3_session(json_file_path = os.environ["AWS_KEY"]):
     """
     Creates a new Boto3 session using AWS credentials stored in a JSON file.
 
@@ -35,21 +36,3 @@ def create_boto3_session(json_file_path):
         aws_secret_access_key=aws_secret,
         aws_session_token=aws_token
     )
-
-def simulate_lambda_locally(filename):
-    if "AWS_KEY" in os.environ:
-        # Get the path to the JSON file containing AWS credentials from an environment variable
-        json_file_path = os.environ["AWS_KEY"]
-        # Read the AWS credentials from the JSON file
-        session = boto3.Session(profile_name='default')
-        
-        # Read the contents of the JSON file
-        with open(filename, "r") as f:
-            event = json.load(f)
-            
-        # Do something with the event object
-        print(event)
-    else:
-        print("AWS_KEY environment variable not set")
-    
-    return event, session

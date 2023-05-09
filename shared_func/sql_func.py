@@ -1,7 +1,9 @@
 import boto3
+from time import sleep
 import json
 import pymysql
 from os import environ
+from secret_manager_func import *
 
 
 def write_sql_file_to_s3(bucket_name, key_name, sql_string):
@@ -32,6 +34,8 @@ def get_database_credentials():
             "user" : environ['user'],
             "password" : environ['password']
         }
+        sleep(1)
+        print(f"connectings as: {environ['user']}.")
 
     else:
         # Get the database credentials from the JSON file
@@ -67,7 +71,7 @@ def connect_to_database():
     """
     
     db_cred = get_master_database_credentials()
-    connection = pymysql.connect(
+    connection = mysql.connector.connect(
         host=db_cred['host'],
         user=db_cred['user'],
         password=db_cred['password']
@@ -159,3 +163,23 @@ def divide_into_sublists(data, max_size):
         list: A list of sublists.
     """
     return [data[i:i+max_size] for i in range(0, len(data), max_size)]
+
+
+def pd_query_mysql(query=None):
+    if query is None:
+        print("Query parameter is missing.")
+        return None
+
+    db_cred = get_database_credentials()
+
+    # Connect to the database
+    connection = pymysql.connect(
+        host=db_cred['host'],
+        user=db_cred['user'],
+        password=db_cred['password'],
+        charset='utf8mb4',
+        cursorclass=pymysql.cursors.DictCursor
+    )
+    import pandas as pd 
+    df = pd.read_sql(query, connection)
+    return df

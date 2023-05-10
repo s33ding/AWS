@@ -1,4 +1,5 @@
 import boto3
+import time
 
 def delete_log_group(log_group_name):
     # create a CloudWatch Logs client

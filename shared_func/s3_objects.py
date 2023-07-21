@@ -118,3 +118,12 @@ def delete_all_s3_files_in_folder(bucket_name, folder_name):
         response = s3.delete_object(Bucket=bucket_name,Key=key_obj)
     
     print("Deletion complete.")
+
+
+def download_file_from_s3(bucket_name, file_key, destination_path):
+    s3 = boto3.client('s3')
+    try:
+        s3.download_file(bucket_name, file_key, destination_path)
+        print(f"File downloaded successfully to: {destination_path}")
+    except Exception as e:
+        print(f"Error downloading file: {e}")

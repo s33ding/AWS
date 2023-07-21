@@ -23,6 +23,8 @@ id=$(jq -r '.id' "$aws_key")
 secret=$(jq -r '.secret' "$aws_key")
 arn=$(jq -r '.arn' "$aws_key")
 
+echo "id: $id"
+
 # Create formatted string
 string="[default]\n\
 aws_access_key_id=$id\n\
@@ -35,7 +37,8 @@ echo -e $string > $AWS_CRED
 read -p '☁️  TOKEN: ' -s TOKEN
 
 # Get temporary credentials and format as JSON with new key names
-aws=$(aws sts get-session-token --duration-seconds 18000 --serial-number $arn --token-code $TOKEN --output json)
+aws=$(aws sts get-session-token --duration-seconds 30000 --serial-number $arn --token-code $TOKEN --output json)
+echo "$aws" 
 id=$(echo "$aws" | jq -r '.Credentials.AccessKeyId')
 secret=$(echo "$aws" | jq -r '.Credentials.SecretAccessKey')
 token=$(echo "$aws" | jq -r '.Credentials.SessionToken')

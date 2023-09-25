@@ -1,0 +1,34 @@
+{
+    "PolicyVersion": {
+        "Document": {
+            "Version": "2012-10-17",
+            "Statement": [
+                {
+                    "Effect": "Allow",
+                    "Action": [
+                        "drs:SendClientLogsForDrs",
+                        "drs:SendClientMetricsForDrs",
+                        "drs:DescribeRecoveryInstances",
+                        "drs:DescribeSourceServers"
+                    ],
+                    "Resource": "*"
+                },
+                {
+                    "Effect": "Allow",
+                    "Action": [
+                        "drs:TagResource",
+                        "drs:IssueAgentCertificateForDrs",
+                        "drs:AssociateFailbackClientToRecoveryInstanceForDrs",
+                        "drs:GetSuggestedFailbackClientDeviceMappingForDrs",
+                        "drs:UpdateAgentReplicationInfoForDrs",
+                        "drs:UpdateFailbackClientDeviceMappingForDrs"
+                    ],
+                    "Resource": "arn:aws:drs:*:*:recovery-instance/*"
+                }
+            ]
+        },
+        "VersionId": "v2",
+        "IsDefaultVersion": true,
+        "CreateDate": "2022-06-27T09:13:40Z"
+    }
+}

@@ -1,0 +1,26 @@
+{
+    "PolicyVersion": {
+        "Document": {
+            "Version": "2012-10-17",
+            "Statement": [
+                {
+                    "Effect": "Allow",
+                    "Action": [
+                        "sso:GetManagedApplicationInstance",
+                        "sso:GetProfile",
+                        "sso:ListProfiles",
+                        "sso:ListProfileAssociations",
+                        "sso:AssociateProfile",
+                        "sso:ListDirectoryAssociations",
+                        "sso-directory:DescribeUsers",
+                        "sso-directory:SearchUsers"
+                    ],
+                    "Resource": "*"
+                }
+            ]
+        },
+        "VersionId": "v2",
+        "IsDefaultVersion": true,
+        "CreateDate": "2022-09-29T20:38:15Z"
+    }
+}

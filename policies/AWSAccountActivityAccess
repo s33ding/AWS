@@ -1,0 +1,34 @@
+{
+    "PolicyVersion": {
+        "Document": {
+            "Version": "2012-10-17",
+            "Statement": [
+                {
+                    "Effect": "Allow",
+                    "Action": [
+                        "account:GetAccountInformation",
+                        "account:GetAlternateContact",
+                        "account:GetChallengeQuestions",
+                        "account:GetContactInformation",
+                        "account:GetRegionOptStatus",
+                        "account:ListRegions",
+                        "billing:GetIAMAccessPreference",
+                        "billing:GetSellerOfRecord",
+                        "payments:ListPaymentPreferences"
+                    ],
+                    "Resource": "*"
+                },
+                {
+                    "Effect": "Allow",
+                    "Action": [
+                        "aws-portal:ViewBilling"
+                    ],
+                    "Resource": "*"
+                }
+            ]
+        },
+        "VersionId": "v2",
+        "IsDefaultVersion": true,
+        "CreateDate": "2023-03-07T17:02:30Z"
+    }
+}

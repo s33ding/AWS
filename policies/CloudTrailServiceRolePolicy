@@ -1,0 +1,46 @@
+{
+    "PolicyVersion": {
+        "Document": {
+            "Version": "2012-10-17",
+            "Statement": [
+                {
+                    "Sid": "CloudTrailFullAccess",
+                    "Effect": "Allow",
+                    "Action": [
+                        "cloudtrail:*"
+                    ],
+                    "Resource": "*"
+                },
+                {
+                    "Sid": "AwsOrgsAccess",
+                    "Effect": "Allow",
+                    "Action": [
+                        "organizations:DescribeAccount",
+                        "organizations:DescribeOrganization",
+                        "organizations:ListAccounts",
+                        "organizations:ListAWSServiceAccessForOrganization"
+                    ],
+                    "Resource": [
+                        "*"
+                    ]
+                },
+                {
+                    "Sid": "AwsOrgsDelegatedAdminAccess",
+                    "Effect": "Allow",
+                    "Action": "organizations:ListDelegatedAdministrators",
+                    "Resource": "*",
+                    "Condition": {
+                        "StringEquals": {
+                            "organizations:ServicePrincipal": [
+                                "cloudtrail.amazonaws.com"
+                            ]
+                        }
+                    }
+                }
+            ]
+        },
+        "VersionId": "v2",
+        "IsDefaultVersion": true,
+        "CreateDate": "2022-11-03T20:35:01Z"
+    }
+}

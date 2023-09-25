@@ -1,0 +1,30 @@
+{
+    "PolicyVersion": {
+        "Document": {
+            "Version": "2012-10-17",
+            "Statement": [
+                {
+                    "Effect": "Allow",
+                    "Action": [
+                        "organizations:ListDelegatedAdministrators",
+                        "organizations:ListAWSServiceAccessForOrganization",
+                        "organizations:DescribeOrganizationalUnit",
+                        "organizations:DescribeAccount",
+                        "organizations:DescribeOrganization",
+                        "inspector2:BatchGet*",
+                        "inspector2:List*",
+                        "inspector2:Describe*",
+                        "inspector2:Get*",
+                        "inspector2:Search*",
+                        "codeguru-security:BatchGetFindings",
+                        "codeguru-security:GetAccountConfiguration"
+                    ],
+                    "Resource": "*"
+                }
+            ]
+        },
+        "VersionId": "v5",
+        "IsDefaultVersion": true,
+        "CreateDate": "2023-09-22T20:56:53Z"
+    }
+}

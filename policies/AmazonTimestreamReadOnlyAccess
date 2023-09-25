@@ -1,0 +1,32 @@
+{
+    "PolicyVersion": {
+        "Document": {
+            "Version": "2012-10-17",
+            "Statement": [
+                {
+                    "Effect": "Allow",
+                    "Action": [
+                        "timestream:CancelQuery",
+                        "timestream:DescribeDatabase",
+                        "timestream:DescribeEndpoints",
+                        "timestream:DescribeTable",
+                        "timestream:ListDatabases",
+                        "timestream:ListMeasures",
+                        "timestream:ListTables",
+                        "timestream:ListTagsForResource",
+                        "timestream:Select",
+                        "timestream:SelectValues",
+                        "timestream:DescribeScheduledQuery",
+                        "timestream:ListScheduledQueries",
+                        "timestream:DescribeBatchLoadTask",
+                        "timestream:ListBatchLoadTasks"
+                    ],
+                    "Resource": "*"
+                }
+            ]
+        },
+        "VersionId": "v3",
+        "IsDefaultVersion": true,
+        "CreateDate": "2023-02-28T18:22:57Z"
+    }
+}

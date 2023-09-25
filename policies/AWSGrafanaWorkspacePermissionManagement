@@ -1,0 +1,42 @@
+{
+    "PolicyVersion": {
+        "Document": {
+            "Version": "2012-10-17",
+            "Statement": [
+                {
+                    "Sid": "AWSGrafanaPermissions",
+                    "Effect": "Allow",
+                    "Action": [
+                        "grafana:DescribeWorkspace",
+                        "grafana:DescribeWorkspaceAuthentication",
+                        "grafana:UpdatePermissions",
+                        "grafana:ListPermissions",
+                        "grafana:ListWorkspaces"
+                    ],
+                    "Resource": "arn:aws:grafana:*:*:/workspaces*"
+                },
+                {
+                    "Sid": "IAMIdentityCenterPermissions",
+                    "Effect": "Allow",
+                    "Action": [
+                        "sso:DescribeRegisteredRegions",
+                        "sso:GetSharedSsoConfiguration",
+                        "sso:ListDirectoryAssociations",
+                        "sso:GetManagedApplicationInstance",
+                        "sso:ListProfiles",
+                        "sso:AssociateProfile",
+                        "sso:DisassociateProfile",
+                        "sso:GetProfile",
+                        "sso:ListProfileAssociations",
+                        "sso-directory:DescribeUser",
+                        "sso-directory:DescribeGroup"
+                    ],
+                    "Resource": "*"
+                }
+            ]
+        },
+        "VersionId": "v4",
+        "IsDefaultVersion": true,
+        "CreateDate": "2023-03-15T22:17:26Z"
+    }
+}

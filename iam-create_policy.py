@@ -17,17 +17,13 @@ set_policy_document_file = lambda: sys.argv[2] if len(sys.argv) > 2 else input(
     "Enter the path to the JSON policy document file: "
 )
 
-if __name__ == "__main__":
+# Set the variables using the lambda functions
+policy_name = set_policy_name()
+policy_document_file = set_policy_document_file()
 
-    # Set the variables using the lambda functions
-    policy_name = set_policy_name()
-    policy_document_file = set_policy_document_file()
-
-    # Ask for user input if any of the arguments is None
-    if policy_name is None:
-        
-    if policy_document_file is None:
-
+# Ask for user input if any of the arguments is None
+    
+if policy_document_file is not None:
     arn = create_iam_policy(policy_name=policy_name, policy_document_file=policy_document_file)
 
     if arn:

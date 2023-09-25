@@ -11,7 +11,4 @@ user_name_func = lambda: sys.argv[1] if len(sys.argv) > 1 else input(
 
 # Get the user name using the lambda function
 user_name = user_name_func()
-
-if __name__ == "__main__":
-    # Call create_iam_user with the obtained user name
-    create_iam_user(user_name)
+create_iam_user(user_name)

@@ -18,25 +18,16 @@ description_func = lambda: sys.argv[3] if len(sys.argv) > 3 else input(
     "Enter Description (default: Lambda Role): "
 )
 
-# another_script.py
-if __name__ == "__main__":
+role_name = role_name_func()
+policy_file = policy_file_func()
+description = description_func()
 
-    role_name = role_name_func()
-    policy_file = policy_file_func()
-    description = description_func()
+# Call create_iam_role with the obtained values
+arn = create_iam_role(
+    role_name=role_name,
+    policy_file=policy_file,
+    description=description
+)
 
-    create_iam_role(
-        role_name=role_name, 
-        policy_file=None, 
-        description=description
-    )
-
-    # Call create_iam_role with the obtained values
-    arn = create_iam_role(
-        role_name=role_name,
-        policy_file=policy_file,
-        description=description
-    )
-
-    if arn:
-        print(f"IAM Role created with ARN: {arn}")
+if arn:
+    print(f"IAM Role created with ARN: {arn}")

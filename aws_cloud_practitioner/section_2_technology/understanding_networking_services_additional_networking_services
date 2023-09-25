@@ -1,0 +1,63 @@
+DNS (Domain Name  System):
+
+  Directs internet traffic by connecting domain names w/ web servers. 
+
+Route 53:
+
+  It is a DNS service that routes users to applications.
+  Domain name resgistration
+  Performs health checks on AWS resources 
+  Route table
+  Hosted Zone
+  Make hybrids cloud architecture easyier. Allow DNS query resolution across your entire hybrid cloud.
+
+AWS Direct Connect:
+
+  Dedicated physical network connection from your on-premises data center to AWS. 
+
+  Connects your on-premises data center to AWS. Data travels a private network.
+
+  Supports a hybrid environment.
+
+  Real World scenario: 
+    The sensitive data is stored on the Private Cloud at the Internal Data Center and the application runs to the Public Cloud and they talk to each other using the AWS Direct Connect
+
+  recommended for:
+
+    Large Datasets: 
+      transfer large datasets to AWS
+
+    Business critical data: 
+      Transfer internal data directly to AWS, bypassing your internet service provider.
+
+    Hybrid Model:
+      Build Hybrid environments.
+
+VPN:
+
+  Site-to-Site creates a secure connection between your internal networks and your AWS VPCs, using the:
+    Virtual Private Gateway  
+    Customer Gateway
+    Site-to-Site VPN
+  
+  !!! Similar to Direct Connect but data travels over the public internet.
+
+  Data is automatically encrypted on the VPN, but the Direct Connect does not encrypt your data by default.
+
+  Connects your on-premisses data center to AWS.
+
+  Supports a bybrid environment.
+
+API Gateway:
+  
+  Allows you to build and manage APIs
+
+  Share data between systems 
+
+  Integrate w/ services like lambda
+
+  Real World example:
+
+    cliente > API gtw > Lambda > RDS
+
+

@@ -1,0 +1,15 @@
+UTILIZING MESSAGING AND INTEGRATION SERVICES-SNS AND SES
+  There are often times that users of your  applications need to be notified when certain events happen.
+
+Simple Notification Service (SNS)
+  SNS allows you to send emails and  text messages from your applications.
+  Publish messages to a topic
+  Subscribe receive messages
+  ex: 
+    Send and email when CPU utilization of an EC2 instances goes 8-% 
+    CloudWatch Alarm > SNS > Email
+
+Simple Email Service (SES)
+  SES is an email service that allows you to send ***richly*** formatted HTML emails from your applications.
+  Ideal choice for marketing campaigns or professional emails
+  Unlike SNS, SES sends HTMLS emails. 

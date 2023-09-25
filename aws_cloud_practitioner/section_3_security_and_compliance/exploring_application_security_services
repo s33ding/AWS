@@ -1,0 +1,47 @@
+EXPLORING APPLICATION SECURITY SERVICES
+
+  AWS has several software-based security tools available to help you monitor and protect your resources.
+
+Firewall
+  Prevent unauthorized access to your netwoks by inspecting incoming and outgoing traffic against security rules you've defined.
+
+Web Application Firewall (WAF)
+  WAF helps protect your web applications against common web attacks:
+    SQL injection:
+    Protects againt cross0site scripting    
+    
+  You can deploy a web application directly to an EC2 instance and protect it from cross-site scripting attacks using WAF. You can even deploy WAF on CloudFront as part of you CDN solution to block malicious traffic.
+ 
+
+SHIELD 
+
+  is a managed Distributed  DDoS protection service, always-on detection 
+
+  DDoS
+    A DDoS attack causes a traffic  ja  on a website or web app ia an attempt to cause it to crash.
+
+  Shield Standard is free   
+
+    Provides a free protection against common and frequently occuring attacks 
+
+  Shield Advanced
+
+    Provides enhanced protection and 24/7 access to AWS experts for a fee
+    
+  SHIELD Advanced is supported on several services.
+
+    CloudFront
+    Route 53
+    Elastic Load Balancing 
+    AWS Global Accelerator
+
+  ex:
+    Receive real-time notificaion of suspected DDoS incidents and assistance from AWS during the attack.
+
+Macie 
+
+  Helps you discover and protect sensitive data.
+
+    It uses ML
+    Evaluates S3 environment
+    Uncovers personally identiable information (PII).Ex: social security numbers ,credit card numbers, passaport numbers.

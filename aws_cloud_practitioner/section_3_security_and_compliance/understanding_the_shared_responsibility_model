@@ -1,0 +1,125 @@
+UNDERSTANDING THE SHARED RESPONSIBILITY MODEL
+
+  AWS:
+    Security of the Cloud:
+      Hardware 
+      Software
+      Networking in the facilites that run AWS Cloud services
+  
+      AWS Infrastructure elements:
+        Regions 
+        Edges 
+        Locations
+        AZs
+
+      Building Security:
+        AWS controls access to its data centers where your data resides
+        This building are under high security
+
+      Networking Components:
+        generators 
+        uninterruptible power supply (UPS) systems
+        compute room air conditioning (CRAC) units
+        fire supprission system
+        and more ...
+
+      Software:
+        AWS is reponsible for any managed service like:
+          RDS
+          S3
+          ECS
+          Lambda
+          patching of host operating systems
+          data access endpoints
+   
+
+  Your responsability:
+    Security in the Cloud:
+      You are nresponsible hor how the services are implemented  and managing your application data.
+
+      Application Data:
+        You are responsible for managing your application data, which includes encryption opetions.    
+      
+      Security Configuration:
+        Account and API calls
+        Rotating credentials
+        Restricting internet access from your VPCs
+        And more ...
+    
+      Patching:
+        Your are responsible for the guest operating system (OS), which includes updates and security patches
+
+      IAM(Identity Access Management):
+        Your are responsible for application security and IAM.
+
+      Network Traffic:
+        You are responsible for network traffic protection, which includes security group firewall configuration.
+
+      Installed Software:
+        You are responsible for:
+          your application code
+          installed software
+          and more ...
+
+
+
+  Shared responsability:
+
+      EC2:
+        You:
+          Installed applications
+          Patching the guest operating system 
+          security controls
+        AWS:
+          EC2 service
+          Patching the host operating system
+          security of the phhysical server
+
+      Lambda:
+        You:
+          Security of code
+          Storage of sensitive data
+          IAM for permissions 
+        AWS:
+          Lambda service 
+          Upgrading Lambda Languages
+          Lambda endpoints
+          OS
+          Software dependencies
+
+==================================================== 
+
+Which security responsabilities are shared?
+  AWS is reponsible 4 the security of the Cloud
+  Your are reponsible 4 the security in the Cloud:  
+    how implement your services
+    how you manage your application data
+
+
+Patch Management:
+  AWS:
+    Patching infrastructure
+  You:
+    Patching guest OS and applications
+
+Configuration Management:
+  AWS:
+    Configuring infrastructure
+  You:
+    Config. DB and apps.
+
+Awareness and Training:
+  AWS:
+    AWS employees
+  You:
+    Your employees
+
+How do I report abuse of AWS resources ?
+  Contact the AWS Trust & Sagety team using the Report Amazon AWS abuse form or by contacting abuse@amazonaws.com.
+
+  ex:
+    Intrusion attempt
+    DDoS
+    Spam
+    Content illegaly distributed
+

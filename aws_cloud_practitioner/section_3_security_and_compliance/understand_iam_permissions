@@ -1,0 +1,45 @@
+Roles 
+  Define access permissions and are temporarily assumed by an IAM user or service. 
+    
+    ex:
+      
+      DevOps-Eng role:
+        When they assume this role they can create code branch in CodeCommit
+        List pipelines in CodePipeline
+    
+      Lambda-Execution role:
+        List contents of S3 bucket 
+        Query DynamoDB
+        
+Key Takeaways(principais conclusões)
+  You assume a role to perform a task in a single session 
+  Assumed by any user or service that needs it.
+  Access is assigned using policies 
+  You grant users in one AWS account access to resources in anorther AWS account.
+
+  ex:
+    Attach a role to an EC2 instance for access to S3:
+      Roles  help you  avoid sharing long-term credentials like acess keys and protect your instances from unauthorized access.  
+
+Policies 
+  U mange permission 4 IAM users, groups, and roles by creating a policy document in json format and attaching it.
+  
+IAM Best Practices 
+  There are several recommended best practices 4 IAM.
+
+  1 - Enable MFA for privileged users.
+    *
+
+  2- Implement strong password policies
+    U should require IAM users to change their passwords after a specidied period of time, prevent users from reusing previous passwords, and rotate security credentials regularly.
+
+  3 - Create individual users instead of  using root.
+
+  4 - Use roles for Amazon EC2 instances.
+
+Credential Report
+  
+  The IAM credential report lists all users in your account and the status of their various credentials.
+
+
+  

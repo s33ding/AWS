@@ -1,0 +1,21 @@
+this section covers 30% of teste exam
+
+200 number of services
+
+Think not only about what the service does but what is the business case that brought this service into existence.
+
+Compute
+  ec2 - virtual servers
+  lambda - run code without managing services
+  lightsail - quickly launch all the resources you need for small projects
+  outpost - allows you to run cloud services in your internal data center,
+  batch - allows you to process large workloads in smaller chuncks.
+
+Storage
+  s3 - storage service that is highly available
+  EBS - storage attached to or removed from your instance
+  EFS - is a serverless storage file system for sharing files
+  Storage Gateway - Is a Hybrid storage service
+
+Backup
+  manage data backups across multiple data services

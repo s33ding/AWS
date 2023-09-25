@@ -1,0 +1,55 @@
+Content Delivery Network (CDN)
+   
+  It is a machnism to deliver conten quickly and effciently based on geographic location.
+
+Amazon CloudFront 
+  
+  It is a CDN that delivers data and  applications globally w/ low latency. 
+  ex:
+    Even if your app is in a single region you can still deliver it globally, bc of CloudFront. 
+
+  It can deliver the content globally  or restict based on the location.
+  
+  It speeds up delivery of static and dynamic web content.
+
+  It can be used for:
+    Precent attacks like DDoS
+    IP address blocking
+
+  The origin of the data in the Distribution Cache can be from:
+    S3
+    EC2 
+    Elastic Load Balancer
+  
+  Definitions:
+
+    static website:
+       It runs on the cliente browser, there is no need to go back to the service to deliver the content. The CloudFront speeds up the service by using edge locations to cache content.
+    static website:
+
+    Edge Locations:
+       Mini data center where files are cached.
+
+    Distrib. Cache:
+      Name given to the collection of edge locations.
+    
+    Obs:
+       W/ edge location you are not provisioning ec2 instance, this is for static content.
+
+Amazon Global Accelerator 
+
+  It sends your users through the AWS global network when accessing your content, speeding up delivery.
+  
+  Improves the availability of a single-Region applications.
+
+  Sends traffic through the AWS global network infrastructure
+
+  60% performance boost
+  
+  Automatically re-routes traffic to health available regional endpoints.
+
+Amazon S3 Transfer Acceleration
+
+  Fast transfer of files over long distances 
+  Uses CloudFront̀s globally distributed edge locaions
+

@@ -1,0 +1,23 @@
+#AWS FARGATE
+  - Fargate is a serverless compute engine for containers
+  - Fargate allows you to manage containers, like  Docker.
+  - It works w/ ECS (Elastic Container Services)
+
+#Amazon Lightsail
+  - Quickly launch all the resources you need for small projects.
+    - Deploy preconfigured applications, WordPress websites.
+    - Simple screen, user friendly.
+    - Includes a virtual machine, SSD-based storage, data transfer, DNS management, and a static IP.
+    - Provides a low, predictable monthly fee, as low as $3.5. Helps u to start small and scall as you grow.
+    
+#AWS Outposts
+  - Support worloads that need to remain on-premises due to latency or data sovereignty needs.
+  - AWS delivers and install servers in your internal data center.
+  - used for a hybrid experience.
+  - Have acess to cloud services and APIs tp develop apps on-premisses(nas instalações)
+
+#AWS Batch
+  - Allows u to process large workloads in smaller chuncks (or batches).
+  - Runs hundreds and thousands of smaller batch processing jobs 
+  - dynamically provisions instances based on volume
+  - dynamically provisions instances based on volume

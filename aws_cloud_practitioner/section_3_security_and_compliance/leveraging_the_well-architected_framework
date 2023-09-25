@@ -1,0 +1,75 @@
+LEVERAGING THE WELL-ARCHITECTED FRAMEWORK
+
+Well-Architected Framework
+  The 6 pillars of the well-architected framework are a high level description of principles and best practices that should always be followed when creating architecture in the AWS Cloud.
+
+  Operational Excellence: 
+    This pillar focuses on creating applications that effectively support production workloads.
+
+      Plan for  and anticipate failure
+      Script oprations as code
+      Deploy smaller, reversible changes
+      Script operations as code
+      learn from failure and refine
+    
+        ex: 
+          CodeCommit - You can use AWS codeCommit for version control to enable tracking of code changes and to version-control CloudFormation templates of your infrastructure.
+
+  Security: 
+    This pillar focuses on putting mechanisms in place that help protect your systems and data.
+
+      Automate security tasks
+      Encrypt data in transit and at rest
+      Assign only the least privileges required
+      Track who did what and when 
+      Ensure security at all application layers
+
+        ex: 
+          CloudTrail - You can configure central logging of all actions performed in your account using CloudTrail.
+
+  Reliability: 
+    This pilar focuses on designing systems that work consistently and recover quickly.
+
+      Recover from failure automatically 
+      Stop guessing capacity*
+      Manage change through automation
+      Test recovery procedures
+
+        ex: 
+          RDS - You can use Multi-AZ deployments for enhanced availability and reliability of RDS EB.
+
+  Performance Efficiency: 
+    This pillar focuses on the effective use of computing resources to meet system  and business  requirements while removing bottlenecks
+
+      Use serverless architectures first
+      Use multi-region deployments
+      Delegate tasks to a cloud vendor
+      Experiment w/ virtual resources
+
+        ex: 
+          Lambda - You can use Lambda to run code w/ zero administration.
+
+  Cost Optimization: 
+    This pillar focuses on delivering optimum and resilient solutions at the least cost to the user:
+
+      Utilize consumption-based pricing
+      Measure overall efficiency
+      Implement Cloud Financial Management
+      Pay only for resources your application requires
+
+        ex: 
+          S3 - You can use S3 Intelligent-Tiering to automatically mv your data between access tiers based on your usage patterns.
+
+  Sustainability: 
+    This pillar focuses on environmental impacts, especially energy consumption and efficiency.
+
+      Understand your impact
+      Maximize utilization
+      Establish sustainability goals
+      Use managed services
+      Reduce downstream impact
+
+        ex: 
+          Auto Scaling - You can use EC2 Auto Scaling to ensure you are maximizing utilization.
+
+

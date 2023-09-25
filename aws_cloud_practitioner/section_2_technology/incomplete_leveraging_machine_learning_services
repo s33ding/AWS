@@ -1,0 +1,47 @@
+AI 
+  teaches computers to do things that normally require human intelligence. Businesses leverage AI and ML to add intelligence to their applications and leverage trends(tendencias) and patterns in data.
+
+Rekognition
+  It allows you to:
+    automate your image and video analysis.
+    Identify custom labels in images and videos
+    Face and text detection in image and videos
+
+Comprehend 
+  It is a natural-language processing (NLP) service that finds relationships in text.
+  It uncovers insights and relationships
+  Ex:
+    You can use comprehend to review social media posts, to detect words and make sentimantal analysis.It a great way to analyse the satisfaction of your customers.
+
+Polly
+  It turns text into speech. 
+  It mimics natural-sounding human speech. 
+  It has several voices across many languages 
+  It can create custom voices.
+
+  EX:
+    Polly could convert the text on a blog post to speech that could then be downloaded or replayed in MP3 format. Audio is often a great complement to written communication.
+
+SageMaker
+  Helps you build, train, and deploy machine learning models quickly.
+  Prepare data for models 
+  Train and deploy models
+  Provides Deep Learning AMIs
+  EX:
+    Companies like Netflix and Amaxon use ML models to recommend movies and products to buy. SageMaker is a great tool for creating these models.
+
+Translate
+  Provides language translation
+  Provides real-rime and batch language translation 
+  translate many content formats
+  Ex:
+    Translate allows you to add localization to your application to support your diverse user base. Translate supports several populaar languages. 
+
+Lex
+  Helps you build conversational interfaces like chatbots. 
+  Recongnizes speech and understands languages.
+  Build highly engaging chatbots.
+  It powers Amazon Alexa.
+
+  Ex:
+    Amazon used the same technologies that power Lex to integrate Amazon Alexa with the device.

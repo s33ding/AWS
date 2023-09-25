@@ -1,0 +1,55 @@
+topic: LEVERAGING_ANALYTICS_SERVICES
+
+Data WareHousing:
+
+  It's a data storage solution that aggregates massive amounts of historical data from disparate(diferente) sources.
+
+  ex:
+    You have multiple transaction system collecting data, you can combine all data in one place using a data warehouse.
+
+  It supports: 
+    Query
+    Reporting 
+    Analytics
+    Business Intelligence
+    
+  They not not used for transaction processing.
+
+  RedShift
+    It is a scalable data warehouse solution
+    Improves speed and efficiency
+    Handles exabyte-scale data
+
+    Use cases:
+      Data consolidation - when you need to consolidate multiple data sources for reporting
+      Relational Databases - when you want to run a database that doesn't require a real-time transaction processig (insert,update, and delete)
+
+ANALYTICS 
+  It's the act of querying or processing your data.
+  
+  There are several services that allow you to gain deeper insights, enhance decision-making, and act in real time to what your data is telling you.
+
+  Athena
+    It's a query service for Amazon S3. U pay per query, it is considered serverless.
+    
+  Glue 
+    Prepare your data for analytics. It's a ETL service.
+
+  Kinesis 
+    Allows you to analyse data and video streams in real time. It supports video, audio, application logs, website clickstreams, and IoT.
+
+  EMR (Elastic Map Reduce)
+    Helps you in:
+      process large amounts of data. 
+      Data Mining
+      ML
+
+  Data pipeline 
+    Helps you mv data between compute and  storage services running either on AWS or on-premises.
+    U can mv data at specific intervals
+    U can mv data based on conditions
+    It sends notifications on success or failure.
+
+  QuickSight
+    It helps you visualize your data.
+    Embed dashboards in you applications.

@@ -1,0 +1,38 @@
+EC2 Storage
+
+  How EC2 works?
+    instances are hosted on host computer or hacker in aws data center. This host computers can be splited into many ec2 instances.     Individual instances can have different types of storage. All EC2 instances must have a root driver. This can be a EBS (Elastic Block Store) volume,  or  Instance Store drivers you can also attach many EBS vol. to a single EC2 instance, like a hard driver.
+    Instance Store have low lantacy and are efemeral, on the other hand EBS are persistent, you can detach an EBS driver from a instance and attach to a different one.
+    EFS (Elastic File System) are like a shared drived that can be associated w/ many instances.
+
+  EBS (Amazon Elastic Block Store) 
+    Is a storage device (called a volume) that can be attached to (or rmv from) your instance. Can only be attached to one instance. It is tied to one AZ.It is the most common storage service to a ec2 instance.
+    U can customize the size, the data is quickly accessible, you store long term data in this volume.
+
+  EC2 instance store 
+    An instance store is local storage that is physically attached to the host computer and can not be removed.
+    Faster with higher I/O speeds, bc the data do not need to travel to the internet.
+    Is temporary since data loss occurs when the ec2 instance is stopped.
+    
+  EFS (Amazon Elastic File System)
+    EFS is a serverless network  file system for sharing  fls. 
+    only supports the linux file system.
+    Acessible across different AZ in the same region.
+    It is expensiver the EBS.
+    reco
+    Recommended for:
+      main directories for business-critical apps
+      Lift-and-shift existing enterprise apps
+
+  Storage Gateway
+    It is a hybrid storage service, conncting on-premises and cloud data. 
+    Recommended for:
+      MV backups to the cloud 
+      Reducing costs for hybrid cloud storage 
+      Low latency access to data
+
+  AWS Backup
+
+    Helps you manage data backups across multiple AWS services.
+    Integrates w/ resources like EC2, EBS, EFS and more.
+    Create a backup pla that includes frequency and retention

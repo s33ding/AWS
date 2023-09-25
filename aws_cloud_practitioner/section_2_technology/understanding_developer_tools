@@ -1,0 +1,65 @@
+Software developers use tools to accelerate the software development and  release cycle.
+
+Cloud9 
+  Allows you to write code within an integrated development environment (IDE) from within your web browser.  
+  features:
+    IDE
+    Write and debug right in your web browser
+    Supports popular programming languages 
+    ex:
+      build serverless applications 
+       Preconfigures the development environment w/ the needed SDKs and libraries. You can easily write the code for your Lambda function directly in your web browser. 
+      
+CodeCommit 
+  It is a source control system for private Git repositories
+  Create repositories to store code 
+  Commit, branch and merge code
+  Collaborate w/ other software developers
+  
+  ex: 
+    Manage versions of source code files for your application.
+
+CodeBuild
+  Allows you to build and test your application source code 
+  Compiles source code and runs tests 
+  Enables continuos integrations and delivery 
+  Produces build artifacts ready to be deployed
+
+  ex:
+    Run tests before deploying a new version of an application to production - Allows you to run as many parallel streams of tests as needed, allowing you to deploy your changes to production more quickly.
+
+CodeDeploy
+  Manages the deployment of code to compute services in the cloud or on-premises.
+  Deploys code to EC2, Fargate, Lambda, and on-premises.
+  Maintains applications uptime.
+  
+  ex:
+    CodeDeploy eliminates the downtime of your application when deploying a new version due to its rolling deployments.
+
+CodePipeline 
+  automates the software release process.
+  Quickly dliver new feartures and updates.
+  Integrates w/ CodeBuild ro run builds and unit tests 
+  Integrates w/ CodeCommit to retrieve source code.
+  Integrates w/ CodeDeploy to deploy your changes.  
+
+  ex:
+    When combined w/ other developer tools, CodePipeline helps develoopment teams implement DevOps practices that automate testing and the movement of code to production.
+    
+X-Ray
+  Helps you debug production applications.
+  Analyze and debug aproduction applications 
+  Map application components
+  View requests end to end
+
+  ex:
+    Can help you map requests made to your RDS database from within your application. You can tracj informaion about the SQL queries generated and more.
+    
+
+CodeStar
+  CodeStar helps developers collaboratively work on development projects
+  Developers connect their development environment 
+  Integrates w/ CodeCommit, CodeBuild, and CodeDeploy.
+  Contain issues track dashboards
+  ex:
+    CodeStar can manage the development pipeline. 

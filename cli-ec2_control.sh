@@ -7,6 +7,9 @@ echo "$config_file"
 instance_id=`jq -r '.instance_id' $config_file`
 region=`jq -r '.region' $config_file`
 
+echo "instance id: $instance_id"
+echo "region: $region"
+
 # Set your emoticon
 emoticon="🖥️"
 

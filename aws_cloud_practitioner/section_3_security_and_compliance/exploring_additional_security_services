@@ -1,0 +1,52 @@
+EXPLORING ADDITIONAL SECURITY SERVICES
+
+Config
+  Allows you to assess, audit, and evaluate the configuraions of your resouces.
+
+    Track configuration changes over time 
+    Delivers configuraion history file to S3
+    Notifications via Simple Notificaton Service (SNS) of every configuration change
+    
+  ex: Identify system level configuration changes within your EC2 instances. You can view network, software, and operating system (OS) configuraion changes, system-level updates, and more.
+    
+GuardDuty
+  GuardDuty is an intelligent threat detection system that uncovers unauthorized behavior.
+    
+    It uses ML to find common patterns 
+    Built-in detection for EC2, S3, and IAM.
+    Reviews CloudTrail, VPC, Flow Logs, DNS logs.
+
+  ex:
+    Detect unusual API calls in your account. A anomaly detection feature evaluates all API requests in your account and identifies events that associated w/ common techiques used by attackers.
+
+Inspector
+  Inspector works w/ EC2 instances to uncover and report vulnerabilites.
+    
+    Agent installed on EC2 instance
+    Reports
+    Checks: 
+      access from the internet, remote root login, vulnerable software versions, etc.
+
+Artifact
+  It offers on-demand access to AWS security and compliance reports
+    
+    Central repository 4 compliance reports from third-parth auditors
+    Service Organization Controls (SOC) reports
+    Payment Card Industry (PCI)
+    
+  ex: 
+    You need to access AWS's certication for ISO compliance. Artifactts provides a central repo. 
+
+Cognito
+  Helps you control access to mobile and web apps.
+  It provides authentication and authorization
+  Helps you manage users
+  Assists w/ users sign-up and sign-in
+  
+  ex: 
+    Cognito provides functinality that allows your users to sign in to your application through social media accounts like Facebook and Google.
+
+
+
+Review
+  -

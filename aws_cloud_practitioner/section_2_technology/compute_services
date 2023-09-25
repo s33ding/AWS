@@ -1,0 +1,130 @@
+EC2
+  ELASTIC compute power 
+      grow or shrink or the load in your application
+  virtual servers in the cloud
+  
+  REVIEW:
+    - Region
+        conten multiple AZs.
+      - AZ (availabity zone)
+          A single AZ contains multiple data centers
+        - Data Center:
+            A single data center contains multiple server.
+          - Server  
+            the servers are the physical compute hardware running in a data center
+            - EC2
+               EC2 instances are the virtual servers running on these physical servers.
+               obs: instances are note considered serverLESS.
+    
+  
+  FOUNDATIONS
+    - you can use a preconfigured template called an ***Amazon Machine Image*** (AMI) to launch your instance.
+    - you can deploy your applications directly to ec2
+    - you can receive 750 compute hours per month on the Free Tier plan.
+
+   EC2 in the real World:
+      - deploy a database in a EC2 to have full control of it.
+      - deploy a web application; if you deploy into multiple regions, the web application will be highly available.  
+  
+  METHODS TO ACESS
+    - AWS management console
+    - SSH
+      how:
+        GENERATE A KEY PAIR, it consiste of a private key and public key.
+          - private key - used on your pc
+          - public key - used on ec2
+          - your public key is like your bank account number and your private key is like your password in your bank account.
+    - EIC (EC2 instance connect) 
+    - EIC allows you to use IAM policies to control SSH access to your instances, removing  the need to manage SSH.
+    - AWS System Manager - Allows you to manage your EC2 instances via a web broser or the AWS CLI.
+
+======================================================================
+
+EC2 price options:
+  
+  ON-DEMAND use cases:
+    - fixed price and no contract
+    - you care about low cost without any upfront payment or long-term commiment
+    - your application have unpredictable workloads that can't be interrupted
+    - your application are under development
+    - your application will not run longer than a year
+
+    *  Fun facts:
+        you can reserve capacity using On-Demand Capacity Reservations, even if you are running or not your instances.
+
+-----------------------------------------------------------------------------------
+
+  SPOT 
+    - Spot instances let you take ***advantagge of unused EC2 capacity***. Your request is fulfilled only if capacity is available.
+    - You are not concerned about the start or stop time of your application
+    - your workloads can be interruptedo 
+    - your application is only feasible(viavel) at a very low compute prices.
+    * fun facts:
+      - you can save up 90% of On-Demand prices.
+      - you pay the spot price that's in effect at the begininning of each hour.
+
+  Reserved Instances(RIs)
+    - allows you to commit to a specific instance type in a particular Region for  1 or 3 years.
+
+    * Use Reserved Instances when:
+     - your application has steady(estavel) state usage, and you can commit to 1 or 3 years.
+     - you can pay upfront in order to receive a discount on On-Demand prices.
+     - your application requires a capacity reservation
+    
+    * fun facts:
+      - U can save 75% off On-Demand prices
+      - U are required to sign a contract
+      - You can reserve a capacity in an Availability Zone for any duration.
+
+    You can reserve capacity in an Availability Zone for any duration
+      - you can pay All Upfront, Partial Upfron, No Upfront. All Upfront for the max term earns the highest discount.
+      - Provides convertible types ( change the: instance family, operate system, tenacy model) at 54% discount.
+      
+-----------------------------------------------------------------------------------
+
+  DEDICATED HOST 
+    - Allow you to par for a physical server that is fully dedicated to running your instancs.
+    - Use dedicated hosts when: 
+      - you want to bring  your own server-bound software license from vendors like Microsoft.    
+      - you have regulatory or corporate compliance requirements around tenancy(locação) model.
+     
+      - fun facts:
+        - U can save up to 70% of On-Demand prices.
+        - U bring your existing per-socket, per-core, or per-VM software licenses.  
+        - There is no multi tenancy(locação), meaning the server is not shared w/ other customers.
+        - A Dedicated Host is a physical server, whereas a Dedicated Instance runs on the host.
+
+-----------------------------------------------------------------------------------
+  
+  SAVINGS PLAN
+  
+    * Use Savings Plans when:
+      - U want to lower your bill across multiple compute services.
+      - U want flexibility to change compute services, instance types, operating systems, or Regions.
+    
+    * Fun facts:
+      - U can sv up to 72% of On-Demand prices.
+      - U are not making a commitment to a Dedicated Host, just compute usage.
+      - Saving can be shared across various compute services like EC2, Fargate, and Lambda.
+      - This does not provide a capacity reservation.
+   
+===================================================================================
+
+FEATURES 
+    
+  - EC2 instances offer load balancing and Auto Scaling
+    1 - Elastic Load Balancing: 
+        - Automaticlly distributes you incoming application traffic across multiple EC2 instances.
+        * types: 
+           - CLASSIC LOAD BALANCERS 
+           - APPLICATION LOAD BALANCERS 
+           - GATEWAY LOAD BALANCERS 
+           - NETWORK LOAD BALANCERS
+
+    2 - EC2 Auto Scaling:
+        - Adds or replaces EC2 instances automatically across AZs, based on need and changing demand.
+        - HORIZONTAL SCALING OR SCALING OUT
+          - Auto Scaling reduces the impact of system failures and improves the availability of your application; Obs: Do not confuse horizontal scaling vertical (or scaling up), which upgrade an EC2 instance by adding more power(CPU. RAM) to an existing server.
+
+
+===================================================================================

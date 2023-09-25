@@ -1,5 +1,4 @@
 import sys
-import boto3
 from shared_func.create_boto3_session_from_json import create_boto3_session
 from shared_func.iam_func import create_iam_user
 

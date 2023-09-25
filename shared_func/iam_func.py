@@ -1,5 +1,6 @@
 import subprocess
 import json
+import boto3
 
 def create_iam_role(role_name=None, policy_file=None, description=None):
 

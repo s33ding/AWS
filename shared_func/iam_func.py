@@ -3,6 +3,8 @@ import json
 import boto3
 import string
 import secrets
+import qrcode
+from io import BytesIO
 
 def create_iam_role(role_name=None, policy_file=None, description=None):
 
@@ -90,10 +92,14 @@ def create_iam_user(username):
 
 def generate_random_password(length=20):
     # Define the character set for the password
-    password_chars = string.ascii_letters + string.digits  
+    password_chars = string.ascii_letters + string.digits + string.punctuation  # Add special characters
 
-    # Generate a random password
-    password = ''.join(secrets.choice(password_chars) for i in range(length))
+    # Ensure at least one special character in the password
+    special_char = secrets.choice(string.punctuation)
+    
+    # Generate the remaining part of the password
+    remaining_length = length - 1  # Subtract 1 for the special character
+    password = special_char + ''.join(secrets.choice(password_chars) for i in range(remaining_length))
 
     return password
 
@@ -219,3 +225,75 @@ def list_roles():
     
     except Exception as e:
         print(f"An error occurred: {str(e)}")
+
+def enforce_mfa_access(username):
+    try:
+        # Initialize the IAM client
+        iam = boto3.client('iam')
+
+        # Get the AWS account ID
+        account_id = iam.get_user()["User"]["Arn"].split(":")[4]
+
+        # Create an IAM policy JSON document to enforce MFA
+        mfa_policy = {
+            "Version": "2012-10-17",
+            "Statement": [
+                {
+                    "Effect": "Deny",
+                    "Action": "*",
+                    "Resource": "*",
+                    "Condition": {
+                        "BoolIfExists": {
+                            "aws:MultiFactorAuthPresent": "false"
+                        }
+                    }
+                },
+                {
+                    "Effect": "Allow",
+                    "Action": "*",
+                    "Resource": "*"
+                }
+            ]
+        }
+
+        # Create the IAM policy or update it if it already exists
+        policy_name = f'{username}_MFA_Policy'
+        policy_document = json.dumps(mfa_policy)
+
+        # Check if the policy exists
+        policy_exists = False
+        for policy in iam.list_policies(Scope='Local')['Policies']:
+            if policy['PolicyName'] == policy_name:
+                policy_exists = True
+                break
+
+        # Initialize version_id to None
+        version_id = None
+
+        if policy_exists:
+            # Get the policy's version ID
+            policy_versions = iam.list_policy_versions(PolicyArn=f'arn:aws:iam::{account_id}:policy/{policy_name}')
+            for version in policy_versions['Versions']:
+                if version['IsDefaultVersion'] is False:
+                    version_id = version['VersionId']
+                    break
+
+            # Delete the existing policy
+            iam.delete_policy_version(PolicyArn=f'arn:aws:iam::{account_id}:policy/{policy_name}', VersionId=version_id)
+
+            # Create a new version of the policy
+            iam.create_policy_version(PolicyArn=f'arn:aws:iam::{account_id}:policy/{policy_name}',
+                                      PolicyDocument=policy_document, SetAsDefault=True)
+            print(f"An updated version of IAM Policy '{policy_name}' has been created and attached to IAM user '{username}' to enforce MFA access.")
+        else:
+            # If the policy doesn't exist, create it
+            iam.create_policy(PolicyName=policy_name, PolicyDocument=policy_document)
+            print(f"IAM Policy '{policy_name}' has been created and attached to IAM user '{username}' to enforce MFA access.")
+
+        # Attach the policy to the IAM user
+        iam.attach_user_policy(UserName=username, PolicyArn=f'arn:aws:iam::{account_id}:policy/{policy_name}')
+
+    except Exception as e:
+        print(f"Error enforcing MFA access for IAM user '{username}': {str(e)}")
+
+

@@ -1,6 +1,7 @@
 import json
 import os
 import boto3
+from botocore.exceptions import ClientError
 
 def insert_into_dynamodb_batch(session, table_name, items):
     """
@@ -74,15 +75,16 @@ def retrieve_from_dynamodb(table_name, key):
     response = table.get_item(Key=key)
     return response.get('Item')
 
-def create_dynamodb_table(table_name, attribute_definitions, key_schema, provisioned_throughput):
-    dynamodb = boto3.client('dynamodb')
-    
+def create_dynamodb_table(session, table_name, attribute_definitions, key_schema):
+    dynamodb = session.client('dynamodb')
+    print("creating the DynamoDB tbl")
     try:
         response = dynamodb.create_table(
             TableName=table_name,
             AttributeDefinitions=attribute_definitions,
             KeySchema=key_schema,
-            ProvisionedThroughput=provisioned_throughput
+            #ProvisionedThroughput=provisioned_throughput
+            BillingMode='PAY_PER_REQUEST'  # Use on-demand capacity mode
         )
         print("Table created successfully!")
     except ClientError as e:
@@ -90,3 +92,97 @@ def create_dynamodb_table(table_name, attribute_definitions, key_schema, provisi
             print("Table already exists.")
         else:
             print("Error:", e)
+
+## Define provisioned throughput
+
+#    provisioned_throughput = {
+#        'ReadCapacityUnits': 5,
+#        'WriteCapacityUnits': 5
+#    }
+
+def list_keys_from_dynamodb(table_name):
+    """
+    List keys from a DynamoDB table.
+
+    Args:
+    - table_name (str): The name of the DynamoDB table.
+
+    Returns:
+    - list: A list of primary key values from the table.
+    """
+    # Initialize the DynamoDB client
+    dynamodb = boto3.client('dynamodb')
+
+    try:
+        # Use the scan operation to list keys
+        response = dynamodb.scan(TableName=table_name, Select='ALL_ATTRIBUTES')
+
+        # Extract the keys from the response
+#        keys = [item['YourPrimaryKeyName'] for item in response['Items']]
+
+        return response
+
+    except Exception as e:
+        print(f"Error: {e}")
+        return []
+
+def query_dynamodb_columns(table_name, lst_cols):
+    # Create a DynamoDB client
+    dynamodb = boto3.client('dynamodb')
+
+    results = {}
+
+    for column_name in lst_cols:
+        # Define the query parameters for each column
+        key_condition_expression = Key(column_name).exists()
+
+        try:
+            # Execute the query for the current column
+            response = dynamodb.query(
+                TableName=table_name,
+                KeyConditionExpression=key_condition_expression
+            )
+
+            # Store the results for the current column
+            results[column_name] = response.get('Items', [])
+        except Exception as e:
+            print(f"Error querying DynamoDB for column {column_name}: {e}")
+            results[column_name] = []
+
+    return results
+
+import boto3
+import pandas as pd
+
+def dynamodb_to_dataframe(table_name):
+    # Initialize a Boto3 DynamoDB client
+    dynamodb = boto3.client('dynamodb', region_name="us-east-1")
+    # Create an empty list to store the DynamoDB items
+    items = []
+
+    # Use a scan operation to retrieve all items from the table
+    response = dynamodb.scan(TableName=table_name)
+
+    # Continue scanning through the entire table if the response is paginated
+    while 'LastEvaluatedKey' in response:
+        items.extend(response['Items'])
+        response = dynamodb.scan(TableName=table_name, ExclusiveStartKey=response['LastEvaluatedKey'])
+
+    # Add the remaining items from the last response
+    items.extend(response['Items'])
+
+    # Extract just the values from the DynamoDB items
+    extracted_data = []
+    for item in items:
+        extracted_item = {}
+        for key, value in item.items():
+            if 'S' in value:
+                extracted_item[key] = value['S']
+            elif 'N' in value:
+                extracted_item[key] = float(value['N'])
+        extracted_data.append(extracted_item)
+
+    # Convert the extracted data to a Pandas DataFrame
+    df = pd.DataFrame(extracted_data)
+
+    return df

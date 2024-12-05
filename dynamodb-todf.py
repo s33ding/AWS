@@ -8,7 +8,11 @@ import os
 session = create_boto3_session()
 
 # Example usage:
+<<<<<<< HEAD
 table_name = 'FaceAnalysis'
+=======
+table_name = 'disponibilidade'
+>>>>>>> 9a288f5 (saving)
 
 df = dynamodb_to_dataframe(table_name)
 print(df)

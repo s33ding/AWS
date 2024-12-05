@@ -42,7 +42,6 @@ def read_single_parquet(bucket, file_path):
         df = pd.read_parquet(f)
     return df
 
-session = create_boto3_session(credentials_file="b3.json")
 dataset = sys.argv[1]
 bucket_name = ""
 lamb_arn = ""

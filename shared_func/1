@@ -5,7 +5,6 @@ import string
 import secrets
 import qrcode
 from io import BytesIO
-import pandas as pd
 
 def create_iam_role(role_name=None, policy_file=None, description=None):
 
@@ -92,7 +91,8 @@ def create_iam_user(username):
     print(f"IAM User '{username}' created.")
 
 
-def get_report():
+
+def get_a_reporter():
     # Initialize a session using Amazon IAM
     session = boto3.Session()
 

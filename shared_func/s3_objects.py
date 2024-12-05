@@ -149,3 +149,40 @@ def download_file_from_s3(bucket_name, file_key, destination_path):
         print(f"File downloaded successfully to: {destination_path}")
     except Exception as e:
         print(f"Error downloading file: {e}")
+
+def upload_dataframe_to_s3(dataframe, bucket_name, key_name=''):
+    msg = f"uploading: {key_name}"
+    print(msg)
+    """
+    Uploads a Pandas DataFrame to an S3 bucket using Boto3.
+
+    Args:
+        dataframe (pd.DataFrame): The Pandas DataFrame you want to upload.
+        bucket_name (str): The name of the S3 bucket where you want to upload the file.
+        key_name (str, optional): The S3 object key (path) where the file will be stored.
+    Returns:
+        str: The S3 object's key (path) where the file was uploaded.
+    """
+    # Extract the file format from the key_name
+    _, file_format = os.path.splitext(key_name)
+    file_format = file_format.lstrip('.')  # Remove the leading dot
+
+    # Create a file path where the DataFrame will be saved
+    file_path = key_name.split("/")[-1]
+
+    # Save the DataFrame to the file based on the extracted format
+    if file_format == 'csv':
+        dataframe.to_csv(file_path, index=False)
+    elif file_format == 'parquet':
+        dataframe.to_parquet(file_path, index=False)
+    elif file_format == 'json':
+        dataframe.to_json(file_path, orient='records', lines=True)
+    else:
+        raise ValueError("Unsupported file format. Use 'csv', 'parquet', or 'json'.")
+
+    print(dataframe.head())
+
+
+    # Create an S3 client using the session
+    s3 = session.client('s3')
+

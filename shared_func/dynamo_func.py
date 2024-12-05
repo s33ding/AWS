@@ -2,6 +2,10 @@ import json
 import os
 import boto3
 from botocore.exceptions import ClientError
+<<<<<<< HEAD
+=======
+import pandas as pd
+>>>>>>> 9a288f5 (saving)
 
 def insert_into_dynamodb_batch(session, table_name, items):
     """
@@ -151,8 +155,11 @@ def query_dynamodb_columns(table_name, lst_cols):
 
     return results
 
+<<<<<<< HEAD
 import boto3
 import pandas as pd
+=======
+>>>>>>> 9a288f5 (saving)
 
 def dynamodb_to_dataframe(table_name):
     # Initialize a Boto3 DynamoDB client

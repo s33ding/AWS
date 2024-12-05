@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import json
 import os
 import boto3
@@ -91,3 +92,85 @@ def delete_images_menu(repository_name):
         else:
             print("Invalid choice. Please select a valid option.")
 
+=======
+import boto3
+import subprocess
+
+def create_ecr_repository(session=None, repository_name=None, region='us-east-1'):
+    """Create an ECR repository."""
+    if session is None:
+        session = boto3.Session(region_name=region)
+    ecr_client = session.client('ecr')
+    try:
+        response = ecr_client.create_repository(repositoryName=repository_name)
+        repository_uri = response['repository']['repositoryUri']
+        print(f"Repository created: {repository_uri}")
+        return repository_uri
+    except ecr_client.exceptions.RepositoryAlreadyExistsException:
+        print("Repository already exists.")
+        return None
+
+def get_docker_login_cmd(session=None, region='us-east-1'):
+    """Get login command for Docker."""
+    if session is None:
+        session = boto3.Session(region_name=region)
+    ecr_client = session.client('ecr')
+    token = ecr_client.get_authorization_token()
+    username, password = token['authorizationData'][0]['authorizationToken'].split(':')
+    proxy_endpoint = token['authorizationData'][0]['proxyEndpoint']
+    return f"docker login -u {username} -p {password} {proxy_endpoint}"
+
+def docker_login(session=None, region='us-east-1'):
+    """Log in to Docker ECR."""
+    cmd = get_docker_login_cmd(region, session)
+    result = subprocess.run(cmd, shell=True)
+    if result.returncode == 0:
+        print("Docker login successful.")
+    else:
+        print("Docker login failed.")
+
+def build_and_push_image(image_name, repository_uri):
+    """Build and push a Docker image."""
+    tag = f"{repository_uri}:latest"
+    subprocess.run(f"docker build -t {tag} .", shell=True)
+    subprocess.run(f"docker push {tag}", shell=True)
+    print(f"Image pushed: {tag}")
+
+def list_ecr_repositories(session=None):
+    ecr_client = session.client('ecr')
+    response = ecr_client.describe_repositories()
+
+    repositories = response['repositories']
+    if len(repositories)==0:
+        print("repositories:") 
+        print(repositories)
+    else:
+        for repo in repositories:
+            print("Repository Name:", repo['repositoryName'])
+            print("Repository URI:", repo['repositoryUri'])
+            print("Registry ID:", repo['registryId'])
+            print("Repository Endpoint:", repo['repositoryUri'].split('/')[0])
+            print()
+
+    return repositories 
+
+def delete_ecr_repository(session=None, repository_name=None):
+    ecr_client = session.client('ecr')
+
+    # Get the registry ID associated with the account
+    response = ecr_client.describe_registry()
+    registry_id = response['registryId']
+
+    # Delete the repository
+    try:
+        ecr_client.delete_repository(
+            registryId=registry_id,
+            repositoryName=repository_name,
+            force=True  # Set to True to delete even if the repository contains images
+        )
+        print(f"ECR repository '{repository_name}' deleted successfully.")
+    except ecr_client.exceptions.RepositoryNotFoundException:
+        print(f"ECR repository '{repository_name}' not found.")
+    except Exception as e:
+        print(f"An error occurred: {e}")
+>>>>>>> 9a288f5 (saving)

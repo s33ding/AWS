@@ -1,6 +1,6 @@
 import boto3 
 
-def comprehend_text(text, session):
+def comprehend_text(text):
     """
     Detects the dominant language of the input text using Amazon Comprehend
     
@@ -10,8 +10,7 @@ def comprehend_text(text, session):
     Returns:
     - lang_code (str): the language code of the detected language
     """
-    # Initialize the Amazon Comprehend client using the session
-    comprehend = session.client('comprehend')
+    comprehend = boto3.client('comprehend')
     
     # Detect the dominant language of the input text
     response = comprehend.detect_dominant_language(Text=text)
@@ -21,7 +20,7 @@ def comprehend_text(text, session):
     
     return lang_code
 
-def translate_text(text, lang_code, session, target_lang_code='en'):
+def translate_text(text, lang_code, target_lang_code='en'):
     """
     Translates the input text to English using Amazon Translate
     
@@ -32,8 +31,7 @@ def translate_text(text, lang_code, session, target_lang_code='en'):
     Returns:
     - translated_text (str): the translated text
     """
-    # Initialize the Amazon Translate client using the session
-    translate = session.client('translate')
+    translate = boto3.client('translate')
     
     # Translate the input text to English
     response = translate.translate_text(

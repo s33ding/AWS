@@ -2,17 +2,13 @@ import json
 import os
 import boto3
 from botocore.exceptions import ClientError
-<<<<<<< HEAD
-=======
 import pandas as pd
->>>>>>> 9a288f5 (saving)
 
-def insert_into_dynamodb_batch(session, table_name, items):
+def insert_into_dynamodb_batch(table_name, items):
     """
     Inserts multiple items into a DynamoDB table in batches.
 
     Parameters:
-    - session (boto3.Session): The active AWS session.
     - table_name (str): The name of the DynamoDB table to insert the items into.
     - items (list): A list of dictionaries representing the items to insert.
 
@@ -20,7 +16,7 @@ def insert_into_dynamodb_batch(session, table_name, items):
     - None
     """
     # Create a DynamoDB client
-    dynamodb = session.client('dynamodb')
+    dynamodb = boto3.client('dynamodb')
 
     # Determine the maximum number of items per batch (25 items is the maximum allowed by DynamoDB)
     max_items_per_batch = 25
@@ -37,7 +33,7 @@ def insert_into_dynamodb_batch(session, table_name, items):
         # Batch write items to DynamoDB
         dynamodb.batch_write_item(RequestItems=request_items)
 
-def insert_into_dynamodb(session,table_name, dct):
+def insert_into_dynamodb(table_name, dct):
     """
     Inserts an item into a DynamoDB table with a primary key.
 
@@ -49,13 +45,13 @@ def insert_into_dynamodb(session,table_name, dct):
     - None
     """
     # Create a DynamoDB resource
-    dynamodb = session.resource('dynamodb')
+    dynamodb = boto3.resource('dynamodb')
     # Retrieve the specified table
     table = dynamodb.Table(table_name)
     # Insert the item into the table
     table.put_item(Item=dct, ConditionExpression='attribute_not_exists(PK)') # The ConditionExpression is used to ensure that the primary key attribute does not already exist.
 
-def list_dynamodb_tables(session):
+def list_dynamodb_tables():
     """
     Lists all of the existing DynamoDB tables in the current region.
 
@@ -66,21 +62,20 @@ def list_dynamodb_tables(session):
     - List of strings representing the names of the DynamoDB tables.
     """
     # Create a DynamoDB client
-    dynamodb = session.client('dynamodb')
+    dynamodb = boto3.client('dynamodb')
     # Call the list_tables method to retrieve a list of table names
     table_list = dynamodb.list_tables()['TableNames']
     # Return the list of table names
     return table_list
 
 def retrieve_from_dynamodb(table_name, key):
-    # Create a Boto3 session using the loaded credentials
-    dynamodb = session.resource('dynamodb')
+    dynamodb = boto3.resource('dynamodb')
     table = dynamodb.Table(table_name)
     response = table.get_item(Key=key)
     return response.get('Item')
 
-def create_dynamodb_table(session, table_name, attribute_definitions, key_schema):
-    dynamodb = session.client('dynamodb')
+def create_dynamodb_table(table_name, attribute_definitions, key_schema):
+    dynamodb = boto3.client('dynamodb')
     print("creating the DynamoDB tbl")
     try:
         response = dynamodb.create_table(
@@ -129,37 +124,6 @@ def list_keys_from_dynamodb(table_name):
     except Exception as e:
         print(f"Error: {e}")
         return []
-
-def query_dynamodb_columns(table_name, lst_cols):
-    # Create a DynamoDB client
-    dynamodb = boto3.client('dynamodb')
-
-    results = {}
-
-    for column_name in lst_cols:
-        # Define the query parameters for each column
-        key_condition_expression = Key(column_name).exists()
-
-        try:
-            # Execute the query for the current column
-            response = dynamodb.query(
-                TableName=table_name,
-                KeyConditionExpression=key_condition_expression
-            )
-
-            # Store the results for the current column
-            results[column_name] = response.get('Items', [])
-        except Exception as e:
-            print(f"Error querying DynamoDB for column {column_name}: {e}")
-            results[column_name] = []
-
-    return results
-
-<<<<<<< HEAD
-import boto3
-import pandas as pd
-=======
->>>>>>> 9a288f5 (saving)
 
 def dynamodb_to_dataframe(table_name):
     # Initialize a Boto3 DynamoDB client

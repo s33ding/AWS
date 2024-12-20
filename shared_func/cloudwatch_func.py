@@ -71,3 +71,34 @@ def send_log_data(log_group_name, log_stream_name, log_data):
         'timestamp': int(time.time() * 1000),
         'message': log_data
     }
+
+
+def get_cloudwatch_log_groups(region_name='us-east-1'):
+    """
+    Retrieve the list of log groups from CloudWatch Logs.
+
+    :param region_name: The AWS region where your CloudWatch Logs are located.
+    :return: A list of log group names or an error message.
+    """
+    try:
+        # Create a boto3 client for CloudWatch Logs
+        client = boto3.client('logs', region_name=region_name)
+
+        log_groups = []
+        paginator = client.get_paginator('describe_log_groups')
+        
+        # Use a paginator to handle large results
+        for page in paginator.paginate():
+            log_groups.extend(page.get('logGroups', []))
+
+        # Extract log group names
+        log_group_names = [lg['logGroupName'] for lg in log_groups]
+
+        return log_group_names
+
+    except NoCredentialsError:
+        return "AWS credentials not found. Please configure your AWS credentials."
+    except PartialCredentialsError:
+        return "Incomplete AWS credentials found. Please check your configuration."
+    except Exception as e:
+        return f"An error occurred: {str(e)}"

@@ -7,27 +7,6 @@ import qrcode
 from io import BytesIO
 import pandas as pd
 
-def create_iam_role(role_name=None, policy_file=None, description=None):
-
-    # AWS CLI command to create the IAM role
-    command = [
-        "aws", "iam", "create-role",
-        "--role-name", role_name,
-        "--description", description,
-        "--assume-role-policy-document", f"file://{policy_file}"
-    ]
-
-    # Execute the AWS CLI command and capture the output
-    try:
-        result = subprocess.run(command, capture_output=True, text=True, check=True)
-        output = result.stdout
-        # Parse the JSON output to extract the ARN
-        role_info = json.loads(output)
-        role_arn = role_info["Role"]["Arn"]
-        return role_arn
-    except subprocess.CalledProcessError as e:
-        print(f"Error: {e.stderr}")
-        return None
 
 def create_iam_policy(policy_name=None, policy_document_file=None):
 
@@ -93,11 +72,8 @@ def create_iam_user(username):
 
 
 def get_report():
-    # Initialize a session using Amazon IAM
-    session = boto3.Session()
-
     # Create IAM client
-    iam = session.client('iam')
+    iam = boto3.client('iam')
 
     # Get list of all users
     response = iam.list_users()

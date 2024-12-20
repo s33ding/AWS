@@ -2,17 +2,8 @@ import boto3
 import json
 import os
 
-with open (os.environ['AWS_KEY'], "r") as f:
-    cred = json.load(f)
-
 # Initialize the Amazon Recognition client
-rekog = boto3.client('rekognition',
-                 region_name='us-east-1',
-                 aws_access_key_id=aws_access_key_id,
-                 aws_secret_access_key=aws_secret_access_key,
-                 aws_session_token=aws_session_token)
-
-# Initialize the Rekognition client
+rekog = boto3.client('rekognition')
 
 # Specify the S3 bucket and image file you want to analyze
 bucket_name = 's33ding-rekognition'

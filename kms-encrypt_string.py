@@ -5,7 +5,7 @@ secret = get_input(message='Please enter a value: ')
 
 print("secret:", secret)
 
-res = encrypt_string(secret, key_alias=config.kms_key_alias, session=session)
+res = encrypt_string(secret, key_alias=config.kms_key_alias)
 
 print("secret encrypted:", res)
 

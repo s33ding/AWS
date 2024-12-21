@@ -1,7 +1,31 @@
 import boto3
 import config
 
-def encrypt_string(secret, key_alias=config.kms_key_alias, boto3=boto3):
+def enable_key_rotation(alias_name):
+    """
+    Enables automatic key rotation for the specified KMS key using its alias.
+
+    Parameters:
+        alias_name (str): The alias of the KMS key (e.g., 'alias/my-key').
+
+    Returns:
+        str: Success message if rotation is enabled, error message otherwise.
+    """
+    # Create a KMS client
+    kms_client = boto3.client('kms')
+
+    try:
+        # Get the Key ID from the alias
+        response = kms_client.describe_key(KeyId=alias_name)
+        key_id = response['KeyMetadata']['KeyId']
+
+        # Enable key rotation
+        kms_client.enable_key_rotation(KeyId=key_id)
+        return f"Key rotation enabled successfully for alias: {alias_name}"
+    except ClientError as e:
+        return f"Failed to enable key rotation for alias: {alias_name}. Error: {e}"
+
+def encrypt_string(secret, key_alias=config.kms_key_alias):
     """
     Encrypts a string using AWS KMS and returns the encrypted secret.
 
@@ -26,7 +50,7 @@ def encrypt_string(secret, key_alias=config.kms_key_alias, boto3=boto3):
 
     return encrypted_secret
 
-def decrypt_string(encrypted_secret, boto3=boto3, key_alias=config.kms_key_alias):
+def decrypt_string(encrypted_secret, key_alias=config.kms_key_alias):
     """
     Decrypts an encrypted string using AWS KMS and returns the decrypted secret.
 
@@ -51,7 +75,7 @@ def decrypt_string(encrypted_secret, boto3=boto3, key_alias=config.kms_key_alias
 
     return decrypted_secret
 
-def encrypt_file(file_path, output_path, key_alias=config.kms_key_alias, boto3=boto3):
+def encrypt_file(file_path, output_path, key_alias=config.kms_key_alias):
     """
     Encrypts a file using AWS KMS and saves the encrypted content to an output file.
 
@@ -59,7 +83,6 @@ def encrypt_file(file_path, output_path, key_alias=config.kms_key_alias, boto3=b
     - file_path (str): The path to the file to encrypt.
     - output_path (str): The path to save the encrypted file.
     - key_alias (str): The KMS key alias to use for encryption.
-    - boto3 (boto3.boto3.Session): The boto3 boto3 to use. Defaults to boto3.
     """
     # Initialize a boto3 using Amazon KMS
     kms_client = boto3.client('kms')
@@ -81,14 +104,13 @@ def encrypt_file(file_path, output_path, key_alias=config.kms_key_alias, boto3=b
     with open(output_path, 'wb') as encrypted_file:
         encrypted_file.write(encrypted_content)
 
-def decrypt_file(encrypted_file_path, output_path, boto3=boto3):
+def decrypt_file(encrypted_file_path, output_path):
     """
     Decrypts an encrypted file using AWS KMS and saves the decrypted content to an output file.
 
     Parameters:
     - encrypted_file_path (str): The path to the encrypted file.
     - output_path (str): The path to save the decrypted file.
-    - boto3 (boto3.boto3.Session): The boto3 boto3 to use. Defaults to boto3.
     """
     # Initialize a boto3 using Amazon KMS
     kms_client = boto3.client('kms')

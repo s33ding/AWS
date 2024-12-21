@@ -6,7 +6,24 @@ import secrets
 import qrcode
 from io import BytesIO
 import pandas as pd
+from botocore.exceptions import ClientError
 
+def create_iam_group(group_name):
+    """
+    Create a group in AWS IAM.
+
+    :param group_name: Name of the group to create.
+    :return: Response from the create_group API call or an error message.
+    """
+    # Initialize the IAM client
+    iam_client = boto3.client('iam')
+
+    # Create the group
+    response = iam_client.create_group(
+        GroupName=group_name
+    )
+    print("Group created successfully.")
+    return response
 
 def create_iam_policy(policy_name=None, policy_document_file=None):
 
@@ -311,4 +328,112 @@ def enforce_mfa_access(username):
     except Exception as e:
         print(f"Error enforcing MFA access for IAM user '{username}': {str(e)}")
 
+
+def list_iam_groups():
+    """
+    List all groups in AWS IAM.
+
+    :return: List of IAM groups.
+    """
+    # Initialize the IAM client
+    iam_client = boto3.client('iam')
+
+    # List the groups
+    response = iam_client.list_groups()
+    groups = response.get('Groups', [])
+    print("IAM Groups:")
+    for group in groups:
+        print(f"- {group['GroupName']}")
+    return groups
+
+def delete_iam_group(group_name):
+    """
+    Delete a specified IAM group.
+
+    :param group_name: Name of the group to delete.
+    :return: Response from the delete_group API call.
+    """
+    # Initialize the IAM client
+    iam_client = boto3.client('iam')
+
+    # Delete the group
+    response = iam_client.delete_group(
+        GroupName=group_name
+    )
+    print(f"Group '{group_name}' deleted successfully.")
+    return response
+
+def delete_iam_group(group_name):
+    """
+    Delete a specified IAM group.
+
+    :param group_name: Name of the group to delete.
+    :return: Response from the delete_group API call.
+    """
+    # Initialize the IAM client
+    iam_client = boto3.client('iam')
+
+    # Delete the group
+    response = iam_client.delete_group(
+        GroupName=group_name
+    )
+    print(f"Group '{group_name}' deleted successfully.")
+    return response
+
+def list_users_in_group(group_name):
+    """
+    List all users in a specified IAM group.
+
+    :param group_name: Name of the group to list users from.
+    :return: List of users in the group.
+    """
+    # Initialize the IAM client
+    iam_client = boto3.client('iam')
+
+    # List the users in the group
+    response = iam_client.get_group(
+        GroupName=group_name
+    )
+    users = response.get('Users', [])
+    print(f"Users in group '{group_name}':")
+    for user in users:
+        print(f"- {user['UserName']}")
+    return users
+
+def attach_user_to_group(user_name, group_name):
+    """
+    Attach a user to an IAM group.
+
+    :param user_name: The name of the IAM user
+    :param group_name: The name of the IAM group
+    :return: None
+    """
+    # Create an IAM client
+    iam = boto3.client('iam')
+
+    try:
+        # Add the user to the group
+        iam.add_user_to_group(GroupName=group_name, UserName=user_name)
+        print(f"User '{user_name}' successfully added to group '{group_name}'.")
+    except ClientError as error:
+        print(f"Error adding user '{user_name}' to group '{group_name}': {error}")
+
+
+def remove_user_from_group(user_name, group_name):
+    """
+    Remove a user from an IAM group.
+
+    :param user_name: The name of the IAM user
+    :param group_name: The name of the IAM group
+    :return: None
+    """
+    # Create an IAM client
+    iam = boto3.client('iam')
+
+    try:
+        # Remove the user from the group
+        iam.remove_user_from_group(GroupName=group_name, UserName=user_name)
+        print(f"User '{user_name}' successfully removed from group '{group_name}'.")
+    except ClientError as error:
+        print(f"Error removing user '{user_name}' from group '{group_name}': {error}")
 

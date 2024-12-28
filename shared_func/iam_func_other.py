@@ -3,10 +3,7 @@ import json
 import boto3
 import string
 import secrets
-import qrcode
 from io import BytesIO
-import pandas as pd
-from botocore.exceptions import ClientError
 
 def create_iam_role(role_name=None, policy_file=None, description=None):
 
@@ -84,77 +81,6 @@ def attach_policy_to_user(user_name, policy_arn):
         print(f"Error: {e.stderr}")
         return None
 
-def create_iam_group(group_name):
-    """
-    Create a group in AWS IAM.
-
-    :param group_name: Name of the group to create.
-    :return: Response from the create_group API call or an error message.
-    """
-    # Initialize the IAM client
-    iam_client = boto3.client('iam')
-
-    # Create the group
-    response = iam_client.create_group(
-        GroupName=group_name
-    )
-    print("Group created successfully.")
-    return response
-
-def create_iam_policy(policy_name=None, policy_document_file=None):
-
-    # AWS CLI command to create the IAM policy
-    command = [
-        "aws", "iam", "create-policy",
-        "--policy-name", policy_name,
-        "--policy-document", f"file://{policy_document_file}"
-    ]
-
-    # Execute the AWS CLI command and capture the output
-    try:
-        result = subprocess.run(command, capture_output=True, text=True, check=True)
-        output = result.stdout
-        # Parse the JSON output to extract the ARN
-        policy_info = json.loads(output)
-        policy_arn = policy_info["Policy"]["Arn"]
-        return policy_arn
-
-    except subprocess.CalledProcessError as e:
-        print(f"Error: {e.stderr}")
-        return None
-
-def attach_policy_to_role(role_name, policy_arn):
-    # AWS CLI command to attach a policy to an IAM role
-    command = [
-        "aws", "iam", "attach-role-policy",
-        "--role-name", role_name,
-        "--policy-arn", policy_arn
-    ]
-
-    # Execute the AWS CLI command
-    try:
-        subprocess.run(command, check=True)
-        print(f"Policy ARN '{policy_arn}' attached to IAM Role '{role_name}' successfully.")
-    except subprocess.CalledProcessError as e:
-        print(f"Error: {e.stderr}")
-
-def attach_policy_to_user(user_name, policy_arn):
-    # AWS CLI command to attach a policy to an IAM user
-    command = [
-        "aws", "iam", "attach-user-policy",
-        "--user-name", user_name,
-        "--policy-arn", policy_arn
-    ]
-
-    # Execute the AWS CLI command
-    try:
-        subprocess.run(command, check=True)
-        print(f"Policy ARN '{policy_arn}' attached to IAM User '{user_name}' successfully.")
-        return user_name
-    except subprocess.CalledProcessError as e:
-        print(f"Error: {e.stderr}")
-        return None
-
 def create_iam_user(username):
     # Create an IAM client
     iam = boto3.client('iam')
@@ -162,41 +88,6 @@ def create_iam_user(username):
     # Create the IAM user
     iam.create_user(UserName=username)
     print(f"IAM User '{username}' created.")
-
-
-def get_report():
-    # Create IAM client
-    iam = boto3.client('iam')
-
-    # Get list of all users
-    response = iam.list_users()
-
-    # Extract user details
-    users = response['Users']
-
-    # Collect user details in a list
-    user_data = []
-    for user in users:
-        # Get user's access keys
-        access_keys_response = iam.list_access_keys(UserName=user['UserName'])
-        access_keys = access_keys_response['AccessKeyMetadata']
-
-        # Include multiple access keys if they exist
-        for access_key in access_keys:
-            user_info = {
-                'UserName': user['UserName'],
-                'UserId': user['UserId'],
-                'Arn': user['Arn'],
-                'CreateDate': user['CreateDate'],
-                'AccessKeyId': access_key['AccessKeyId'],
-                'AccessKeyStatus': access_key['Status'],
-                'AccessKeyCreateDate': access_key['CreateDate']
-            }
-            user_data.append(user_info)
-
-    # Convert to DataFrame
-    df = pd.DataFrame(user_data)
-    return df
 
 def generate_random_password(length=20):
     # Define the character set for the password
@@ -405,113 +296,85 @@ def enforce_mfa_access(username):
         print(f"Error enforcing MFA access for IAM user '{username}': {str(e)}")
 
 
-def list_iam_groups():
+import boto3
+
+def disable_aws_access_key(username):
     """
-    List all groups in AWS IAM.
+    Disable all active access keys of a given IAM user.
 
-    :return: List of IAM groups.
-    """
-    # Initialize the IAM client
-    iam_client = boto3.client('iam')
-
-    # List the groups
-    response = iam_client.list_groups()
-    groups = response.get('Groups', [])
-    print("IAM Groups:")
-    for group in groups:
-        print(f"- {group['GroupName']}")
-    return groups
-
-def delete_iam_group(group_name):
-    """
-    Delete a specified IAM group.
-
-    :param group_name: Name of the group to delete.
-    :return: Response from the delete_group API call.
-    """
-    # Initialize the IAM client
-    iam_client = boto3.client('iam')
-
-    # Delete the group
-    response = iam_client.delete_group(
-        GroupName=group_name
-    )
-    print(f"Group '{group_name}' deleted successfully.")
-    return response
-
-def delete_iam_group(group_name):
-    """
-    Delete a specified IAM group.
-
-    :param group_name: Name of the group to delete.
-    :return: Response from the delete_group API call.
-    """
-    # Initialize the IAM client
-    iam_client = boto3.client('iam')
-
-    # Delete the group
-    response = iam_client.delete_group(
-        GroupName=group_name
-    )
-    print(f"Group '{group_name}' deleted successfully.")
-    return response
-
-def list_users_in_group(group_name):
-    """
-    List all users in a specified IAM group.
-
-    :param group_name: Name of the group to list users from.
-    :return: List of users in the group.
-    """
-    # Initialize the IAM client
-    iam_client = boto3.client('iam')
-
-    # List the users in the group
-    response = iam_client.get_group(
-        GroupName=group_name
-    )
-    users = response.get('Users', [])
-    print(f"Users in group '{group_name}':")
-    for user in users:
-        print(f"- {user['UserName']}")
-    return users
-
-def attach_user_to_group(user_name, group_name):
-    """
-    Attach a user to an IAM group.
-
-    :param user_name: The name of the IAM user
-    :param group_name: The name of the IAM group
-    :return: None
+    :param username: The username of the IAM user whose access keys need to be disabled.
     """
     # Create an IAM client
-    iam = boto3.client('iam')
+    iam_client = boto3.client('iam')
 
     try:
-        # Add the user to the group
-        iam.add_user_to_group(GroupName=group_name, UserName=user_name)
-        print(f"User '{user_name}' successfully added to group '{group_name}'.")
-    except ClientError as error:
-        print(f"Error adding user '{user_name}' to group '{group_name}': {error}")
+        # List access keys for the specified user
+        response = iam_client.list_access_keys(UserName=username)
+        access_keys = response['AccessKeyMetadata']
+
+        if not access_keys:
+            print(f"No access keys found for user: {username}")
+            return
+
+        # Loop through all access keys and disable any that are active
+        for key in access_keys:
+            key_id = key['AccessKeyId']
+            status = key['Status']
+
+            if status == 'Active':
+                # Disable the access key
+                iam_client.update_access_key(
+                    UserName=username,
+                    AccessKeyId=key_id,
+                    Status='Inactive'
+                )
+                print(f"Disabled access key: {key_id} for user: {username}")
+            else:
+                print(f"Access key: {key_id} is already inactive for user: {username}")
+
+    except Exception as e:
+        print(f"An error occurred: {e}")
 
 
-def remove_user_from_group(user_name, group_name):
+def enable_aws_access_key(username):
     """
-    Remove a user from an IAM group.
+    Enable all inactive access keys of a given IAM user.
 
-    :param user_name: The name of the IAM user
-    :param group_name: The name of the IAM group
-    :return: None
+    :param username: The username of the IAM user whose access keys need to be enabled.
     """
     # Create an IAM client
-    iam = boto3.client('iam')
+    iam_client = boto3.client('iam')
 
     try:
-        # Remove the user from the group
-        iam.remove_user_from_group(GroupName=group_name, UserName=user_name)
-        print(f"User '{user_name}' successfully removed from group '{group_name}'.")
-    except ClientError as error:
-        print(f"Error removing user '{user_name}' from group '{group_name}': {error}")
+        # List access keys for the specified user
+        response = iam_client.list_access_keys(UserName=username)
+        access_keys = response['AccessKeyMetadata']
+
+        if not access_keys:
+            print(f"No access keys found for user: {username}")
+            return
+
+        # Loop through all access keys and enable any that are inactive
+        for key in access_keys:
+            key_id = key['AccessKeyId']
+            status = key['Status']
+
+            if status == 'Inactive':
+                # Enable the access key
+                iam_client.update_access_key(
+                    UserName=username,
+                    AccessKeyId=key_id,
+                    Status='Active'
+                )
+                print(f"Enabled access key: {key_id} for user: {username}")
+            else:
+                print(f"Access key: {key_id} is already active for user: {username}")
+
+    except Exception as e:
+        print(f"An error occurred: {e}")
+
+
+import boto3
 
 def remove_user_from_all_groups(username):
     """
@@ -559,77 +422,3 @@ def attach_user_to_group(username, group_name):
     except Exception as e:
         print(f"An error occurred while adding the user to the group: {e}")
 
-
-def disable_aws_access_key(username):
-    """
-    Disable all active access keys of a given IAM user.
-
-    :param username: The username of the IAM user whose access keys need to be disabled.
-    """
-    # Create an IAM client
-    iam_client = boto3.client('iam')
-
-    try:
-        # List access keys for the specified user
-        response = iam_client.list_access_keys(UserName=username)
-        access_keys = response['AccessKeyMetadata']
-
-        if not access_keys:
-            print(f"No access keys found for user: {username}")
-            return
-
-        # Loop through all access keys and disable any that are active
-        for key in access_keys:
-            key_id = key['AccessKeyId']
-            status = key['Status']
-
-            if status == 'Active':
-                # Disable the access key
-                iam_client.update_access_key(
-                    UserName=username,
-                    AccessKeyId=key_id,
-                    Status='Inactive'
-                )
-                print(f"Disabled access key: {key_id} for user: {username}")
-            else:
-                print(f"Access key: {key_id} is already inactive for user: {username}")
-
-    except Exception as e:
-        print(f"An error occurred: {e}")
-
-def enable_aws_access_key(username):
-    """
-    Enable all inactive access keys of a given IAM user.
-
-    :param username: The username of the IAM user whose access keys need to be enabled.
-    """
-    # Create an IAM client
-    iam_client = boto3.client('iam')
-
-    try:
-        # List access keys for the specified user
-        response = iam_client.list_access_keys(UserName=username)
-        access_keys = response['AccessKeyMetadata']
-
-        if not access_keys:
-            print(f"No access keys found for user: {username}")
-            return
-
-        # Loop through all access keys and enable any that are inactive
-        for key in access_keys:
-            key_id = key['AccessKeyId']
-            status = key['Status']
-
-            if status == 'Inactive':
-                # Enable the access key
-                iam_client.update_access_key(
-                    UserName=username,
-                    AccessKeyId=key_id,
-                    Status='Active'
-                )
-                print(f"Enabled access key: {key_id} for user: {username}")
-            else:
-                print(f"Access key: {key_id} is already active for user: {username}")
-
-    except Exception as e:
-        print(f"An error occurred: {e}")

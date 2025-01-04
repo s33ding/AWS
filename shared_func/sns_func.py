@@ -1,26 +1,18 @@
 import boto3
+import config
 
 # Create an SNS client
-sns_client = boto3.client('sns', region_name='us-east-1')
-
-# Create an SNS client
-def create_sns_client(region_name='us-east-1'):
-    return boto3.client('sns', region_name=region_name)
+sns_client = boto3.client('sns', region_name=config.region_name)
 
 # Create an SNS topic
-def create_sns_topic(topic_name, sns_client=None):
-    if sns_client is None:
-        sns_client = create_sns_client()
-    
+def create_sns_topic(topic_name):
     response = sns_client.create_topic(Name=topic_name)
     topic_arn = response['TopicArn']
     print(f'Created topic with ARN: {topic_arn}')
     return topic_arn
 
 # List all SNS topics
-def list_sns_topics(sns_client=None):
-    if sns_client is None:
-        sns_client = create_sns_client()
+def list_sns_topics():
     
     response = sns_client.list_topics()
     topics = response['Topics']
@@ -30,7 +22,7 @@ def list_sns_topics(sns_client=None):
     return topics
 
 # Subscribe an endpoint to a topic
-def subscribe_to_topic(topic_arn, protocol, endpoint, sns_client=None):
+def subscribe_to_topic(topic_arn, protocol, endpoint):
     """
     Subscribe an endpoint to an SNS topic with the specified protocol and endpoint.
 
@@ -51,13 +43,9 @@ def subscribe_to_topic(topic_arn, protocol, endpoint, sns_client=None):
             - For 'sqs' protocol, provide the ARN of the Amazon SQS queue.
             - For 'application' protocol, provide the platform-specific identifier for the mobile app.
 
-        sns_client (botocore.client.SNS, optional): An optional pre-existing SNS client instance.
-
     Returns:
         str: The ARN of the created subscription.
     """
-    if sns_client is None:
-        sns_client = create_sns_client()
 
     print(f"Subscribing to topic {topic_arn} with Protocol: {protocol} and Endpoint: {endpoint}")
 
@@ -75,9 +63,7 @@ def subscribe_to_topic(topic_arn, protocol, endpoint, sns_client=None):
         return None
 
 # Publish a message to a topic
-def publish_to_topic(topic_arn, message, sns_client=None):
-    if sns_client is None:
-        sns_client = create_sns_client()
+def publish_to_topic(topic_arn, message):
     
     response = sns_client.publish(
         TopicArn=topic_arn,
@@ -88,9 +74,7 @@ def publish_to_topic(topic_arn, message, sns_client=None):
     return message_id
 
 # List subscriptions for a topic
-def list_topic_subscriptions(topic_arn, sns_client=None):
-    if sns_client is None:
-        sns_client = create_sns_client()
+def list_topic_subscriptions(topic_arn):
     
     response = sns_client.list_subscriptions_by_topic(TopicArn=topic_arn)
     subscriptions = response['Subscriptions']
@@ -100,17 +84,13 @@ def list_topic_subscriptions(topic_arn, sns_client=None):
     return subscriptions
 
 # Unsubscribe from a topic
-def unsubscribe_from_topic(subscription_arn, sns_client=None):
-    if sns_client is None:
-        sns_client = create_sns_client()
+def unsubscribe_from_topic(subscription_arn):
     
     sns_client.unsubscribe(SubscriptionArn=subscription_arn)
     print('Unsubscribed from the topic')
 
 # Delete an SNS topic
-def delete_sns_topic(topic_arn, sns_client=None):
-    if sns_client is None:
-        sns_client = create_sns_client()
+def delete_sns_topic(topic_arn):
     
     sns_client.delete_topic(TopicArn=topic_arn)
     print(f'Deleted topic with ARN: {topic_arn}')

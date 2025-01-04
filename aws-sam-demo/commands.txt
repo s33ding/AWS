@@ -1,0 +1,18 @@
+Run all the commands using the AWS CloudShell, it already has the AWS CLI, SAM CLI installed. 
+
+1) Copy hello-from-lambda.js and template.yml to the CloudShell:
+curl -O https://raw.githubusercontent.com/ACloudGuru-Resources/course-aws-certified-developer-associate/main/CloudFormation_SAM_Demo/hello-from-lambda.js
+
+curl -O https://raw.githubusercontent.com/ACloudGuru-Resources/course-aws-certified-developer-associate/main/CloudFormation_SAM_Demo/template.yml
+
+2) Create an S3 bucket (add some random numbers to the bucket name to create a unique name):
+aws s3 mb s3://cfsambucket
+
+3) Package the files and save them to the S3 bucket you just created:
+sam package --template-file template.yml --output-template-file sam-template.yml --s3-bucket cfsambucket
+
+4) Deploy the code: 
+sam deploy --template-file sam-template.yml --stack-name mystack --capabilities CAPABILITY_IAM
+
+5) In the Lambda console, view the code, and test it. 
+

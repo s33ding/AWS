@@ -1,7 +1,44 @@
 import boto3
+from botocore.exceptions import NoCredentialsError, PartialCredentialsError
 
 # Initialize the EC2 client
 ec2_client = boto3.client('ec2')
+
+
+def create_key_pair(key_name, file_name=None):
+    """
+    Creates a new EC2 key pair and optionally saves it to a file.
+
+    :param key_name: The name of the key pair to create.
+    :param file_name: The file name to save the private key. If None, the private key is not saved.
+    """
+    try:
+        # Initialize a session using default credentials
+        ec2_client = boto3.client('ec2')
+
+        # Create the key pair
+        response = ec2_client.create_key_pair(KeyName=key_name)
+
+        # Extract the private key
+        private_key = response['KeyMaterial']
+
+        print(f"Key pair '{key_name}' created successfully!")
+
+        # Save the private key to a file if a file name is provided
+        if file_name:
+            with open(file_name, 'w') as file:
+                file.write(private_key)
+            print(f"Private key saved to '{file_name}'. Please keep it safe and secure!")
+        else:
+            print("Private key:")
+            print(private_key)
+
+    except NoCredentialsError:
+        print("AWS credentials not found. Please configure your credentials.")
+    except PartialCredentialsError:
+        print("Incomplete AWS credentials configuration. Please check your credentials.")
+    except Exception as e:
+        print(f"An error occurred: {e}")
 
 def get_instance_name(tags):
     """Extracts the Name tag from the instance tags."""

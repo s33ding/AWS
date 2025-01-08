@@ -633,3 +633,137 @@ def enable_aws_access_key(username):
 
     except Exception as e:
         print(f"An error occurred: {e}")
+
+
+def get_customer_managed_policies():
+    # Initialize the IAM client
+    iam = boto3.client('iam')
+
+    # List Customer Managed Policies
+    policies_data = []
+    paginator = iam.get_paginator('list_policies')
+    response_iterator = paginator.paginate(Scope='Local')
+
+    try:
+        for page in response_iterator:
+            for policy in page['Policies']:
+                # Fetch policy metadata
+                policy_name = policy['PolicyName']
+                policy_arn = policy['Arn']
+                default_version_id = policy['DefaultVersionId']
+                create_date = policy['CreateDate']
+                update_date = policy['UpdateDate']
+                attachment_count = policy['AttachmentCount']
+
+                # Fetch policy document
+                version_response = iam.get_policy_version(
+                    PolicyArn=policy_arn,
+                    VersionId=default_version_id
+                )
+                policy_document = json.dumps(version_response['PolicyVersion']['Document'], indent=4)
+
+                # Add data to the list
+                policies_data.append({
+                    "PolicyName": policy_name,
+                    "PolicyArn": policy_arn,
+#                    "DefaultVersionId": default_version_id,
+#                    "CreateDate": create_date,
+                    "UpdateDate": update_date,
+#                    "AttachmentCount": attachment_count,
+#                    "PolicyDocument": policy_document
+                })
+
+    except Exception as e:
+        print(f"Error retrieving policies: {e}")
+
+    # Convert to Pandas DataFrame
+    df = pd.DataFrame(policies_data)
+    return df
+
+import boto3
+import pandas as pd
+import json
+
+
+def get_all_policies():
+    """
+    Fetch all policies (Customer Managed and AWS Managed)
+    and return as a Pandas DataFrame.
+    """
+    iam = boto3.client('iam')
+
+    policies_data = []
+    paginator = iam.get_paginator('list_policies')
+
+    # Fetch both AWS Managed and Customer Managed Policies
+    for scope in ['AWS', 'Local']:
+        response_iterator = paginator.paginate(Scope=scope)
+        for page in response_iterator:
+            for policy in page['Policies']:
+                policies_data.append({
+                    "PolicyName": policy['PolicyName'],
+                    "PolicyArn": policy['Arn'],
+#                    "DefaultVersionId": policy['DefaultVersionId'],
+                    "Scope": scope,
+#                    "CreateDate": policy['CreateDate'],
+                    "UpdateDate": policy['UpdateDate'],
+#                    "AttachmentCount": policy['AttachmentCount']
+                })
+
+    # Convert to Pandas DataFrame
+    df = pd.DataFrame(policies_data)
+    return df
+
+
+def query_policies_by_name(partial_name):
+    """
+    Query policies by part of their name (case-insensitive).
+    Returns a Pandas DataFrame of matched policies.
+    """
+    # Fetch all policies
+    df = get_all_policies()
+
+    # Filter policies by partial name (case-insensitive)
+    filtered_df = df[df['PolicyName'].str.contains(partial_name, case=False, na=False)]
+
+    return filtered_df
+
+def get_policy_json_by_arn(policy_arn, file_path=None):
+    """
+    Fetch and display/save the JSON document of a policy by its ARN.
+
+    :param policy_arn: The ARN of the policy.
+    :param file_path: Optional file path to save the policy JSON document.
+    """
+    # Initialize the IAM client
+    iam = boto3.client('iam')
+
+    try:
+        # Get policy details to retrieve the default version ID
+        policy_details = iam.get_policy(PolicyArn=policy_arn)
+        default_version_id = policy_details['Policy']['DefaultVersionId']
+
+        # Fetch the policy document of the default version
+        version_response = iam.get_policy_version(
+            PolicyArn=policy_arn,
+            VersionId=default_version_id
+        )
+        policy_document = version_response['PolicyVersion']['Document']
+
+        # Print the policy JSON document
+        print("\nPolicy JSON Document:")
+        print(json.dumps(policy_document, indent=4))
+
+        # Save the policy JSON document to a file if file_path is provided
+        if file_path:
+            with open(file_path, 'w') as file:
+                json.dump(policy_document, file, indent=4)
+            print(f"\nPolicy JSON has been saved to '{file_path}'")
+
+        # Optionally return the JSON document
+        return policy_document
+
+    except Exception as e:
+        print(f"Error retrieving policy JSON: {e}")
+        return None
+

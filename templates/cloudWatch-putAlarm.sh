@@ -1,0 +1,1 @@
+aws cloudwatch put-metric-alarm --alarm-name CriticalErrorMon --alarm-description "CriticalError Monitor" --metric-name CriticalError --namespace MyService --statistic SampleCount --period 300 --threshold 1 --comparison-operator GreaterThanThreshold --evaluation-periods 1

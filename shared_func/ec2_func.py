@@ -1,44 +1,33 @@
 import boto3
+import sys
+import os
 from botocore.exceptions import NoCredentialsError, PartialCredentialsError
+import pandas as pd
 
 # Initialize the EC2 client
 ec2_client = boto3.client('ec2')
 
-
-def create_key_pair(key_name, file_name=None):
-    """
-    Creates a new EC2 key pair and optionally saves it to a file.
-
-    :param key_name: The name of the key pair to create.
-    :param file_name: The file name to save the private key. If None, the private key is not saved.
-    """
+def create_key_pair(key_name, save_path):
     try:
-        # Initialize a session using default credentials
-        ec2_client = boto3.client('ec2')
-
-        # Create the key pair
+        # Create a key pair
         response = ec2_client.create_key_pair(KeyName=key_name)
 
         # Extract the private key
         private_key = response['KeyMaterial']
 
-        print(f"Key pair '{key_name}' created successfully!")
+        # Save the private key to a file
+        key_file_path = os.path.join(save_path, f"{key_name}.pem")
+        with open(key_file_path, 'w') as key_file:
+            key_file.write(private_key)
 
-        # Save the private key to a file if a file name is provided
-        if file_name:
-            with open(file_name, 'w') as file:
-                file.write(private_key)
-            print(f"Private key saved to '{file_name}'. Please keep it safe and secure!")
-        else:
-            print("Private key:")
-            print(private_key)
+        # Set file permissions to read-only
+        os.chmod(key_file_path, 0o400)
 
-    except NoCredentialsError:
-        print("AWS credentials not found. Please configure your credentials.")
-    except PartialCredentialsError:
-        print("Incomplete AWS credentials configuration. Please check your credentials.")
+        print(f"Key pair '{key_name}' created and saved to {key_file_path}")
+        return key_file_path
     except Exception as e:
         print(f"An error occurred: {e}")
+        sys.exit(1)
 
 def get_instance_name(tags):
     """Extracts the Name tag from the instance tags."""
@@ -150,6 +139,44 @@ def menu_to_control():
         else:
             print("Invalid choice. Please try again.")
 
-# Uncomment the line below to run the menu
-# menu_to_control()
 
+
+def list_ec2_instances():
+    try:
+        # Initialize a session using Amazon EC2
+        ec2_client = boto3.client('ec2')
+
+        # Describe all instances
+        response = ec2_client.describe_instances()
+
+        # Extract instance details
+        instances = []
+        for reservation in response['Reservations']:
+            for instance in reservation['Instances']:
+                instance_id = instance.get('InstanceId', 'N/A')
+                public_ip = instance.get('PublicIpAddress', 'N/A')
+                private_ip = instance.get('PrivateIpAddress', 'N/A')
+                state = instance.get('State', {}).get('Name', 'N/A')
+                public_dns = instance.get('PublicDnsName', 'N/A')
+                instance_link = f"https://console.aws.amazon.com/ec2/v2/home?region={ec2_client.meta.region_name}#Instances:instanceId={instance_id}"
+
+                instances.append({
+                    'Instance ID': instance_id,
+                    'State': state,
+                    'Public IP': public_ip,
+                    'Private IP': private_ip,
+                    'Public DNS': public_dns,
+                    'Instance Link': instance_link
+                })
+
+        # Create a DataFrame from the instance list
+        df = pd.DataFrame(instances)
+
+        # Display the DataFrame
+        print("EC2 Instances:")
+        print(df)
+
+        return df
+    except Exception as e:
+        print(f"An error occurred: {e}")
+        return None

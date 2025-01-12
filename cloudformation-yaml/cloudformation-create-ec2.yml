@@ -1,3 +1,14 @@
+AWSTemplateFormatVersion: 2010-09-09
+
+Description: Template to create an EC2 instance and enable SSH with CloudWatch monitoring
+
+Parameters:
+  KeyName:
+    Description: Name of an existing EC2 KeyPair to enable SSH access to the instance
+    Type: 'AWS::EC2::KeyPair::KeyName'
+    ConstraintDescription: Must be the name of an existing EC2 KeyPair
+
+Resources:
   MyEC2Instance:
     Type: 'AWS::EC2::Instance'
     Properties:
@@ -10,6 +21,7 @@
       Tags:
         - Key: Name
           Value: My CF Instance
+
   InstanceSecurityGroup:
     Type: 'AWS::EC2::SecurityGroup'
     Properties:
@@ -24,3 +36,4 @@ Outputs:
   InstanceID:
     Description: The Instance ID
     Value: !Ref MyEC2Instance
+

@@ -180,3 +180,71 @@ def list_ec2_instances():
     except Exception as e:
         print(f"An error occurred: {e}")
         return None
+
+def list_and_manage_key_pairs():
+    try:
+        # Initialize a session using Amazon EC2
+        ec2_client = boto3.client('ec2')
+
+        # Retrieve all key pairs
+        response = ec2_client.describe_key_pairs()
+
+        # Extract key pair details
+        key_pairs = []
+        for key_pair in response['KeyPairs']:
+            key_name = key_pair.get('KeyName', 'N/A')
+            key_fingerprint = key_pair.get('KeyFingerprint', 'N/A')
+
+            key_pairs.append({
+                'Key Name': key_name,
+                'Fingerprint': key_fingerprint
+            })
+
+        # Create a DataFrame for display
+        df = pd.DataFrame(key_pairs)
+
+        if df.empty:
+            print("No key pairs found.")
+            return
+
+        print("Available Key Pairs:")
+        print(df)
+
+        # Interactive menu for deletion
+        while True:
+            print("\nOptions:")
+            print("1. Delete a key pair")
+            print("2. Exit")
+            choice = input("Enter your choice: ").strip()
+
+            if choice == '1':
+                key_to_delete = input("Enter the Key Name to delete: ").strip()
+
+                # Check if the key exists in the list
+                if key_to_delete in df['Key Name'].values:
+                    try:
+                        ec2_client.delete_key_pair(KeyName=key_to_delete)
+                        print(f"Key pair '{key_to_delete}' has been deleted.")
+
+                        # Remove from the DataFrame
+                        df = df[df['Key Name'] != key_to_delete]
+                        print("Updated Key Pairs:")
+                        print(df)
+
+                        if df.empty:
+                            print("No more key pairs remaining.")
+                            break
+                    except Exception as e:
+                        print(f"An error occurred while deleting the key pair: {e}")
+                else:
+                    print("Key name not found in the list.")
+
+            elif choice == '2':
+                print("Exiting...")
+                break
+
+            else:
+                print("Invalid choice. Please try again.")
+
+    except Exception as e:
+        print(f"An error occurred: {e}")

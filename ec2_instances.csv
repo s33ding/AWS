@@ -1,2 +1,0 @@
-Instance ID,State,Public IP,Private IP,Public DNS,Instance Link
-i-0a40a5531946a4640,running,35.175.143.87,172.31.84.222,ec2-35-175-143-87.compute-1.amazonaws.com,https://console.aws.amazon.com/ec2/v2/home?region=us-east-1#Instances:instanceId=i-0a40a5531946a4640

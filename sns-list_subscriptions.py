@@ -10,4 +10,4 @@ topic_arn_func= lambda: sys.argv[1] if len(sys.argv) > 1 else input(
 
 topic_arn = topic_arn_func()
 # List subscriptions for a topic
-list_topic_subscriptions(topic_arn, sns_client=None)
+list_topic_subscriptions(topic_arn)

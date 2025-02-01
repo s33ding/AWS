@@ -15,4 +15,4 @@ message_func = lambda: sys.argv[2] if len(sys.argv) > 2 else input(
 topic_arn = topic_arn_func()
 message = message_func()
     
-publish_to_topic(topic_arn, message, sns_client=None)
+publish_to_topic(topic_arn, message)

@@ -68,4 +68,4 @@ protocol = protocol_func()
 endpoint = endpoint_func()
 
 # Get the user name using the lambda function
-subscription_arn = subscribe_to_topic(topic_arn, protocol, endpoint, sns_client=None)
+subscription_arn = subscribe_to_topic(topic_arn, protocol, endpoint)

@@ -7,6 +7,9 @@ import pandas as pd
 # Initialize the EC2 client
 ec2_client = boto3.client('ec2')
 
+pd.set_option('display.max_colwidth', None)  # Do not truncate column values
+pd.set_option('display.max_rows', None)     # Show all rows
+
 def create_key_pair(key_name, save_path):
     try:
         # Create a key pair

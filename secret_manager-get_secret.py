@@ -8,5 +8,7 @@ import os
 secret_name = get_input("secret_name: ")
 res = get_secret(secret_name)
 # Use Secrets Manager client object to get secret value
-print("res:",res)
+
+for k,v in res.items():
+    print(k," --- ",v)
 

@@ -1,14 +1,19 @@
-from shared_func.argv_parser import get_input
-from shared_func.secret_manager_func import create_secret
-import boto3
+import sys
 import json
-import os
+from shared_func.secret_manager_func import create_secret
+
+def main():
+    if len(sys.argv) < 3:
+        secret_name = input("Enter the secret name: ").strip()
+        json_file = input("Enter the json file path: ").strip()
+    else:
+        secret_name = sys.argv[1]
+        json_file_path = sys.argv[2]
 
 
-new_secret_name = "template"
+    response = create_secret(secret_name, json_file_path)
+    print("Secret Created Successfully:", response)
 
-secret = dict()
-secret["template"]=""
-
-response = create_secret(new_secret_name, secret)
-print("New secret successfully added to Secrets Manager.")
+if __name__ == "__main__":
+    main()
+  

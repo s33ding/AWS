@@ -22,11 +22,7 @@ def read_aws_credentials(json_file_path):
     aws_token = credentials.get("token")
     return aws_key, aws_secret, aws_token
 
-<<<<<<< HEAD
 def create_boto3_session(json_file_path = os.environ["AWS_TEMP_CRED"]):
-=======
-def create_boto3_session(json_file_path = config.path_boto3_cred):
->>>>>>> 9a288f5 (saving)
     """
     Creates a new Boto3 session using AWS credentials stored in a JSON file.
 

@@ -40,6 +40,18 @@ def get_instance_name(tags):
                 return tag['Value']
     return "Unnamed"
 
+import boto3
+
+ec2_client = boto3.client('ec2')
+
+def get_instance_name(tags):
+    """Extracts the Name tag from instance tags."""
+    if tags:
+        for tag in tags:
+            if tag['Key'] == 'Name':
+                return tag['Value']
+    return "Unnamed Instance"
+
 def list_ec2(return_list=False):
     """Lists all EC2 instances with their name, status, and type."""
     try:
@@ -97,18 +109,19 @@ def delete_ec2(instance_id):
 def turn_off_ec2(instance_id):
     """Stops an EC2 instance by ID."""
     try:
-        response = ec2_client.stop_instances(InstanceIds=[instance_id])
-        print(f"Stopping instance {instance_id}: {response}")
+        ec2_client.stop_instances(InstanceIds=[instance_id])
+        print(f"EC2 instance {instance_id} stopped.")
     except Exception as e:
-        print(f"Error stopping EC2 instance {instance_id}: {e}")
+        print(f"Error: {e}")
 
 def turn_on_ec2(instance_id):
     """Starts an EC2 instance by ID."""
     try:
-        response = ec2_client.start_instances(InstanceIds=[instance_id])
-        print(f"Starting instance {instance_id}: {response}")
+        ec2_client.start_instances(InstanceIds=[instance_id])
+        print(f"EC2 instance {instance_id} started.")
     except Exception as e:
-        print(f"Error starting EC2 instance {instance_id}: {e}")
+        print(f"Error: {e}")
+
 
 def menu_to_control():
     """Menu to control EC2 instances interactively."""
@@ -157,6 +170,8 @@ def list_ec2_instances():
         for reservation in response['Reservations']:
             for instance in reservation['Instances']:
                 instance_id = instance.get('InstanceId', 'N/A')
+                instance_type = instance['InstanceType']
+                name = get_instance_name(instance.get('Tags'))
                 public_ip = instance.get('PublicIpAddress', 'N/A')
                 private_ip = instance.get('PrivateIpAddress', 'N/A')
                 state = instance.get('State', {}).get('Name', 'N/A')
@@ -164,6 +179,7 @@ def list_ec2_instances():
                 instance_link = f"https://console.aws.amazon.com/ec2/v2/home?region={ec2_client.meta.region_name}#Instances:instanceId={instance_id}"
 
                 instances.append({
+                    'Name': name,
                     'Instance ID': instance_id,
                     'State': state,
                     'Public IP': public_ip,

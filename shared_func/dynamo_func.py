@@ -157,3 +157,40 @@ def dynamodb_to_dataframe(table_name):
     df = pd.DataFrame(extracted_data)
 
     return df
+
+def empty_dynamodb_table(table_name, region_name='us-east-1'):
+    dynamodb = boto3.resource('dynamodb', region_name=region_name)
+    table = dynamodb.Table(table_name)
+
+    print(f"Scanning table '{table_name}'...")
+
+    # Scan the table and collect all items
+    response = table.scan()
+    data = response.get('Items', [])
+    print(f"Scanned {len(data)} items.")
+
+    # Continue scanning if there are more pages
+    page = 1
+    while 'LastEvaluatedKey' in response:
+        print(f"Fetching page {page + 1}...")
+        response = table.scan(ExclusiveStartKey=response['LastEvaluatedKey'])
+        scanned_items = response.get('Items', [])
+        data.extend(scanned_items)
+        print(f"Scanned {len(scanned_items)} more items (total so far: {len(data)}).")
+        page += 1
+
+    print(f"Starting deletion of {len(data)} items...")
+
+    # Delete each item
+    with table.batch_writer() as batch:
+        for idx, item in enumerate(data, start=1):
+            key = {k['AttributeName']: item[k['AttributeName']] for k in table.key_schema}
+            batch.delete_item(Key=key)
+            print(f"[{idx}/{len(data)}] Deleted item with key: {key}")
+
+    print(f"\n✅ All {len(data)} items deleted from '{table_name}'.")
+
+
+
+
+

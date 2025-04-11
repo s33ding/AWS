@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 import json
 import os
 import boto3
@@ -92,9 +91,6 @@ def delete_images_menu(repository_name):
         else:
             print("Invalid choice. Please select a valid option.")
 
-=======
-import boto3
-import subprocess
 
 def create_ecr_repository(session=None, repository_name=None, region='us-east-1'):
     """Create an ECR repository."""
@@ -173,4 +169,3 @@ def delete_ecr_repository(session=None, repository_name=None):
         print(f"ECR repository '{repository_name}' not found.")
     except Exception as e:
         print(f"An error occurred: {e}")
->>>>>>> 9a288f5 (saving)

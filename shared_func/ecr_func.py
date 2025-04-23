@@ -132,8 +132,7 @@ def build_and_push_image(image_name, repository_uri):
     subprocess.run(f"docker push {tag}", shell=True)
     print(f"Image pushed: {tag}")
 
-def list_ecr_repositories(session=None):
-    ecr_client = session.client('ecr')
+def list_ecr_repositories():
     response = ecr_client.describe_repositories()
 
     repositories = response['repositories']

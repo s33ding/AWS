@@ -13,24 +13,30 @@ def wait_for_query_to_finish(query_execution_id):
             return status
         time.sleep(5)
 
-:ef list_tables_in_database(database_name,s3_output_location):
-    # Set up Athena client
-
+def list_tables_in_database(database_name, s3_output_location=None):
     # Define the query to list the tables
     sql_query = f"SHOW TABLES IN {database_name}"
 
+    # Set up query execution parameters
+    query_params = {
+        'QueryString': sql_query,
+        'QueryExecutionContext': {'Database': database_name}
+    }
+
+    # If S3 output location is provided, include it in the query parameters
+    if s3_output_location:
+        query_params['ResultConfiguration'] = {'OutputLocation': s3_output_location}
+    else:
+        # Set a default S3 output location if none is provided
+        default_output_location = 's3://your-default-bucket/output/'
+        query_params['ResultConfiguration'] = {'OutputLocation': default_output_location}
 
     # Start the query execution
-    response = athena_client.start_query_execution(
-        QueryString=sql_query,
-        QueryExecutionContext={'Database': database_name},
-        ResultConfiguration={'OutputLocation': s3_output_location}
-    )
+    response = athena_client.start_query_execution(**query_params)
 
     # Get the QueryExecutionId
-    query_execution_id = response['QueryExecutionId']
+    query_execution_id = response['QueryExecutionId'] 
     print(f"Query Execution ID: {query_execution_id}")
-
 
     # Wait for the query to finish and check its status
     status = wait_for_query_to_finish(query_execution_id)
@@ -38,13 +44,15 @@ def wait_for_query_to_finish(query_execution_id):
     # If the query was successful, fetch the results
     if status == 'SUCCEEDED':
         result = athena_client.get_query_results(QueryExecutionId=query_execution_id)
-        print(result)
+        
         # Extract table names from the result
         table_names = [row['Data'][0]['VarCharValue'] for row in result['ResultSet']['Rows']]
+        
         return table_names
     else:
         print(f"Query failed with status: {status}")
         return []
+
 
 def create_view_for_table(table, database_name, s3_output_location, view_name, select_clause='*', where_clause=None):
     """

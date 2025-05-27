@@ -1,5 +1,7 @@
 import boto3
 import time
+import pandas as pd
+import io
 
 athena_client = boto3.client('athena', region_name='us-east-1')  # Adjust the region as necessary
 
@@ -99,4 +101,51 @@ def create_view_for_table(table, database_name, s3_output_location, view_name, s
     # Wait for the query to finish and check its status
     status = wait_for_query_to_finish(query_execution_id)
     return status
+
+
+def query_athena_to_df(query, database, output_location, region_name='us-east-1'):
+    """
+    Executes a query on AWS Athena and returns the results as a pandas DataFrame.
+
+    Parameters:
+        query (str): SQL query to execute.
+        database (str): Athena database to query.
+        output_location (str): S3 location where query results are stored, e.g. 's3://your-bucket/folder/'.
+        region_name (str): AWS region where Athena is hosted.
+
+    Returns:
+        pd.DataFrame: Query results as a DataFrame.
+    """
+    client = boto3.client('athena', region_name=region_name)
+
+    # Start query execution
+    response = client.start_query_execution(
+        QueryString=query,
+        QueryExecutionContext={'Database': database},
+        ResultConfiguration={'OutputLocation': output_location}
+    )
+    query_execution_id = response['QueryExecutionId']
+
+    # Wait for the query to finish
+    while True:
+        status = client.get_query_execution(QueryExecutionId=query_execution_id)
+        state = status['QueryExecution']['Status']['State']
+        if state in ['SUCCEEDED', 'FAILED', 'CANCELLED']:
+            break
+        time.sleep(1)
+
+    if state != 'SUCCEEDED':
+        raise Exception(f"Query failed or was cancelled: {state}")
+
+    # Get result file from S3
+    result_file = f"{output_location}{query_execution_id}.csv"
+    s3 = boto3.client('s3')
+    parsed = boto3.session.Session().resource('s3')
+    bucket_name = result_file.split('/')[2]
+    key = '/'.join(result_file.split('/')[3:])
+    obj = parsed.Object(bucket_name, key)
+    data = obj.get()['Body'].read().decode('utf-8')
+
+    # Load CSV into pandas DataFrame
+    return pd.read_csv(io.StringIO(data))
 

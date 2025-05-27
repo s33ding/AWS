@@ -2,6 +2,7 @@ import json
 import os
 import boto3
 from botocore.exceptions import ClientError
+import concurrent.futures
 import pandas as pd
 
 def insert_into_dynamodb_batch(table_name, items):
@@ -158,7 +159,8 @@ def dynamodb_to_dataframe(table_name):
 
     return df
 
-def empty_dynamodb_table(table_name, region_name='us-east-1'):
+
+def empty_dynamodb_table(table_name, region_name='us-east-1', reverse=False, max_workers=10):
     dynamodb = boto3.resource('dynamodb', region_name=region_name)
     table = dynamodb.Table(table_name)
 
@@ -170,27 +172,26 @@ def empty_dynamodb_table(table_name, region_name='us-east-1'):
     print(f"Scanned {len(data)} items.")
 
     # Continue scanning if there are more pages
-    page = 1
     while 'LastEvaluatedKey' in response:
-        print(f"Fetching page {page + 1}...")
         response = table.scan(ExclusiveStartKey=response['LastEvaluatedKey'])
-        scanned_items = response.get('Items', [])
-        data.extend(scanned_items)
-        print(f"Scanned {len(scanned_items)} more items (total so far: {len(data)}).")
-        page += 1
+        data.extend(response.get('Items', []))
 
-    print(f"Starting deletion of {len(data)} items...")
+    if reverse:
+        data.reverse()
 
-    # Delete each item
-    with table.batch_writer() as batch:
-        for idx, item in enumerate(data, start=1):
-            key = {k['AttributeName']: item[k['AttributeName']] for k in table.key_schema}
-            batch.delete_item(Key=key)
-            print(f"[{idx}/{len(data)}] Deleted item with key: {key}")
+    print(f"Starting deletion of {len(data)} items (reverse={reverse}, parallel=True)...")
+
+    def delete_item(item):
+        key = {k['AttributeName']: item[k['AttributeName']] for k in table.key_schema}
+        table.delete_item(Key=key)
+        return key
+
+    with concurrent.futures.ThreadPoolExecutor(max_workers=max_workers) as executor:
+        future_to_key = {executor.submit(delete_item, item): idx for idx, item in enumerate(data, 1)}
+        for i, future in enumerate(concurrent.futures.as_completed(future_to_key), 1):
+            key = future.result()
+            print(f"[{i}/{len(data)}] Deleted item with key: {key}")
 
     print(f"\n✅ All {len(data)} items deleted from '{table_name}'.")
-
-
-
 
 

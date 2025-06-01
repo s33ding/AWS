@@ -179,3 +179,34 @@ def upload_dataframe_to_s3(dataframe, bucket_name, key_name=''):
 
 
 
+def load_parquet_folder_from_s3(bucket_name, prefix):
+    """
+    Loads all .parquet files from a folder in an S3 bucket into a single pandas DataFrame.
+    
+    Parameters:
+        bucket_name (str): Name of the S3 bucket.
+        prefix (str): Prefix (folder path) within the bucket.
+        
+    Returns:
+        pd.DataFrame: Combined DataFrame of all parquet files.
+    """
+    s3 = boto3.client('s3')
+    response = s3.list_objects_v2(Bucket=bucket_name, Prefix=prefix)
+
+    if 'Contents' not in response:
+        raise ValueError("No files found in the specified S3 prefix.")
+
+    dfs = []
+    for obj in response['Contents']:
+        key = obj['Key']
+        if key.endswith('.parquet'):
+            buffer = io.BytesIO()
+            s3.download_fileobj(bucket_name, key, buffer)
+            buffer.seek(0)
+            df = pd.read_parquet(buffer)
+            dfs.append(df)
+
+    if not dfs:
+        raise ValueError("No .parquet files found in the specified S3 prefix.")
+
+    return pd.concat(dfs, ignore_index=True)

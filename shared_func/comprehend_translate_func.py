@@ -1,3 +1,8 @@
+import time
+import uuid
+import json
+import requests
+import os
 import boto3 
 
 def comprehend_text(text):

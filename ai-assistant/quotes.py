@@ -18,14 +18,17 @@ import os
 from datetime import datetime
 
 
-def show_popup(quote, sec=6):
+def show_popup(quote, author, sec=6):
     def close_after_delay():
         root.after(sec * 1000, root.destroy)
 
     def save_quote():
         save_dir = "/home/roberto/Github/Obsidian/s33ding/quotes"
         os.makedirs(save_dir, exist_ok=True)
-        filename = datetime.now().strftime("quote_%Y%m%d_%H%M%S.txt")
+        quote_text = quote.strip()
+        filename = f"{author}_{datetime.now().strftime('%Y%m%d_%H%M%S')}.txt".replace(" ","_").lower()
+        filename = filename.replace(" ","_").lower()
+
         path = os.path.join(save_dir, filename)
         with open(path, "w") as f:
             f.write(quote)
@@ -105,37 +108,122 @@ def show_popup(quote, sec=6):
     threading.Thread(target=close_after_delay).start()
     root.mainloop()
 
-
 quote_prompts = [
-    "Give me a quote about persistence — just the quote and the author.",
-    "Share a quote about personal growth, with the author’s name only.",
-    "Give me a famous quote about hard work, and who said it.",
-    "Show me a quote on resilience, along with the author.",
-    "Give a quote about discipline — include only the author’s name.",
-    "Share a quote about overcoming struggle, with attribution.",
-    "Give me a quote on determination, and who said it.",
-    "Provide a quote about meaningful work, plus the author.",
-    "Show a quote on not giving up — just the words and who said them.",
-    "Give me a short quote about steady effort, with the author’s name.",
-    "Share a quote about lifelong learning, and the person who said it.",
-    "Give me a quote about the value of consistency, with attribution.",
-    "Provide a quote on pushing through difficulty — quote and author only.",
-    "Show a quote about endurance from a historical figure — no explanation.",
-    "Give me a quote about growth and progress — just the quote and author."
+    "Give me a quote about persistence.",
+    "Share a quote about personal growth.",
+    "Give me a famous quote about hard work.",
+    "Show me a quote on resilience.",
+    "Give a quote about discipline.",
+    "Share a quote about overcoming struggle.",
+    "Give me a quote on determination.",
+    "Provide a quote about meaningful work.",
+    "Show a quote on not giving up.",
+    "Give me a short quote about steady effort.",
+    "Share a quote about lifelong learning.",
+    "Give me a quote about the value of consistency.",
+    "Provide a quote on pushing through difficulty.",
+    "Show a quote about endurance from a historical figure.",
+    "Give me a quote about growth and progress."
 ]
+
+# List of 70 Western writers/philosophers and their countries
+figures = [
+    ("Socrates", "Greece"),
+    ("Plato", "Greece"),
+    ("Aristotle", "Greece"),
+    ("Marcus Aurelius", "Italy"),
+    ("Cicero", "Italy"),
+    ("Seneca", "Spain"),
+    ("Augustine of Hippo", "Algeria"),
+    ("Boethius", "Italy"),
+    ("Thomas Aquinas", "Italy"),
+    ("Anselm of Canterbury", "England"),
+    ("Michel de Montaigne", "France"),
+    ("René Descartes", "France"),
+    ("Francis Bacon", "England"),
+    ("John Locke", "England"),
+    ("David Hume", "Scotland"),
+    ("Adam Smith", "Scotland"),
+    ("Voltaire", "France"),
+    ("Jean-Jacques Rousseau", "Switzerland"),
+    ("Immanuel Kant", "Germany"),
+    ("Leibniz", "Germany"),
+    ("Hegel", "Germany"),
+    ("Schopenhauer", "Germany"),
+    ("Kierkegaard", "Denmark"),
+    ("Nietzsche", "Germany"),
+    ("Karl Marx", "Germany"),
+    ("John Stuart Mill", "England"),
+    ("Henrik Ibsen", "Norway"),
+    ("Tolstoy", "Russia"),
+    ("Dostoevsky", "Russia"),
+    ("Whitman", "United States"),
+    ("Emerson", "United States"),
+    ("Bertrand Russell", "Wales"),
+    ("Wittgenstein", "Austria"),
+    ("Heidegger", "Germany"),
+    ("Sartre", "France"),
+    ("Simone de Beauvoir", "France"),
+    ("Albert Camus", "Algeria"),
+    ("Foucault", "France"),
+    ("Derrida", "France"),
+    ("Hannah Arendt", "Germany"),
+    ("Isaiah Berlin", "Latvia"),
+    ("Noam Chomsky", "United States"),
+    ("Richard Rorty", "United States"),
+    ("Cornel West", "United States"),
+    ("José Ortega y Gasset", "Spain"),
+    ("Gramsci", "Italy"),
+    ("Umberto Eco", "Italy"),
+    ("Jorge Luis Borges", "Argentina"),
+    ("Octavio Paz", "Mexico"),
+    ("García Márquez", "Colombia"),
+    ("Vargas Llosa", "Peru"),
+    ("Vaclav Havel", "Czech Republic"),
+    ("Czesław Miłosz", "Poland"),
+    ("Copernicus", "Poland"),
+    ("Spinoza", "Netherlands"),
+    ("Erasmus", "Netherlands"),
+    ("Benedetto Croce", "Italy"),
+    ("Giambattista Vico", "Italy"),
+    ("Paul Tillich", "Germany"),
+    ("Alasdair MacIntyre", "Scotland"),
+    ("Charles Taylor", "Canada"),
+    ("Gilles Deleuze", "France"),
+    ("Slavoj Žižek", "Slovenia"),
+    ("Karl Popper", "Austria"),
+    ("Thomas Paine", "England"),
+    ("Terry Eagleton", "England"),
+    ("Herbert Marcuse", "Germany"),
+    ("Hans-Georg Gadamer", "Germany"),
+    ("Maurice Merleau-Ponty", "France")
+]
+
+
+
 
 if __name__ == "__main__":
     speak = True
 
-    # Pick a random quote prompt
     chosen_prompt = random.choice(quote_prompts)
+    chosen_figure = random.choice(figures)
+    author, country = chosen_figure
+
+
     print(f"Prompt: {chosen_prompt}")
 
-    # Add instruction to keep it concise
-    instruction = "Respond with just one short quote and the author's name only. No explanations.\n"
-    full_prompt = instruction + chosen_prompt
+    instruction = (
+    f"Give me one very short, clear motivational quote (no more than 20 words) "
+    f"by {author}, related to work, discipline, or progress. "
+    f"Only return the quote and author's name. The author is from {country}."
+)
 
-    # Pass the full prompt into the Bedrock function
+
+
+    full_prompt = instruction + "\n" + chosen_prompt
+
+
+    # Get the quote from the model
     res = run_bedrock(full_prompt)
 
     if speak:
@@ -144,6 +232,5 @@ if __name__ == "__main__":
             voice_id="Kendra"
         )
 
-    # Show quote in popup window
-    show_popup(res)
-
+    # Show quote in popup
+    show_popup(res,author)

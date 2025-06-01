@@ -22,7 +22,7 @@ def polly_speak(
     """
     output_path = "/tmp/polly.mp3"
     # Wrap the prompt in SSML
-
+    session = boto3.Session(profile_name="iesb", region_name="us-east-1")
     polly = boto3.client("polly")
 
     response = polly.synthesize_speech(

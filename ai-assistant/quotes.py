@@ -18,7 +18,7 @@ import os
 from datetime import datetime
 
 
-def show_popup(quote, author, sec=6):
+def show_popup(quote, author, sec=8):
     def close_after_delay():
         root.after(sec * 1000, root.destroy)
 
@@ -26,7 +26,7 @@ def show_popup(quote, author, sec=6):
         save_dir = "/home/roberto/Github/Obsidian/s33ding/quotes"
         os.makedirs(save_dir, exist_ok=True)
         quote_text = quote.strip()
-        filename = f"{author}_{datetime.now().strftime('%Y%m%d_%H%M%S')}.txt".replace(" ","_").lower()
+        filename = f"{author}_{datetime.now().strftime('%Y%m%d_%H%M%S')}.md"
         filename = filename.replace(" ","_").lower()
 
         path = os.path.join(save_dir, filename)

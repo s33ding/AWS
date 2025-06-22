@@ -19,20 +19,25 @@ aws ecr create-repository --repository-name "$REPO_NAME" --region "$REGION"
 # === BUILD DOCKER IMAGE ===
 echo "Building Docker image with kubectl and awscli..."
 cat <<'EOF' > Dockerfile
-FROM amazonlinux:2023
+FROM docker:20.10-dind
 
-# Install base tools
-RUN yum -y update && \
-    yum install -y unzip curl tar gzip python3 pip shadow-utils --allowerasing && \
+# Install useful tools
+RUN apk add --no-cache \
+    bash \
+    curl \
+    python3 \
+    py3-pip \
+    unzip \
+    tar \
+    gzip \
+    shadow && \
     pip3 install --upgrade awscli
 
-# Install Docker CLI & Daemon
-RUN yum install -y docker
-
+# Install kubectl
 RUN curl -LO "https://dl.k8s.io/release/v1.29.0/bin/linux/amd64/kubectl" && \
     chmod +x kubectl && mv kubectl /usr/local/bin/
 
-CMD ["bash"]
+CMD ["dockerd-entrypoint.sh"]
 EOF
 
 

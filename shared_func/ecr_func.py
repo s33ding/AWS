@@ -18,20 +18,27 @@ def delete_ecr_repository(repo_name):
 
 
 
-def list_ecr_images(repository_name):
-    """
-    List all images (tags/digests) in a specific ECR repository.
-    """
-    try:
-        images = []
-        paginator = ecr_client.get_paginator('list_images')
-        for page in paginator.paginate(repositoryName=repository_name):
-            for image in page['imageIds']:
-                images.append(image)
-        return images
-    except Exception as e:
-        print(f"Error listing images in repository {repository_name}: {e}")
-        return []
+def list_ecr_images():
+    ecr = boto3.client("ecr", region_name=region)
+    account_id = boto3.client("sts").get_caller_identity()["Account"]
+
+    uris = []
+
+    print(f"🔍 Listing ECR repositories in region: {region}...")
+
+    paginator = ecr.get_paginator("describe_repositories")
+    for page in paginator.paginate():
+        for repo in page["repositories"]:
+            uri = f"{account_id}.dkr.ecr.{region}.amazonaws.com/{repo['repositoryName']}"
+            uris.append(uri)
+
+    if not uris:
+        print("❌ No repositories found.")
+    else:
+        for i, uri in enumerate(uris, 1):
+            print(f"{i:2}. {uri}")
+
+    return uris
 
 def delete_ecr_image(repository_name, image_digest=None, image_tag=None):
     """

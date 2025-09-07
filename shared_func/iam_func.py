@@ -295,17 +295,22 @@ def list_users():
     # List all IAM users
     response = iam.list_users()
 
+    lst_users = []
     # Extract and print user names
     if 'Users' in response:
         users = response['Users']
         if users:
             print("IAM Users:")
             for user in users:
-                print(user['UserName'])
+                usr = user['UserName']
+                print(usr)
+                lst_users.append(usr)
         else:
             print("No IAM users found.")
     else:
         print("No IAM users found.")
+    
+    return lst_users
 
 def get_account_id():
     sts = boto3.client('sts')

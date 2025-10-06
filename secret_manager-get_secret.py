@@ -2,11 +2,18 @@ import sys
 import json
 import os
 from shared_func.argv_parser import get_input
-from shared_func.secret_manager_func import get_secret
+from shared_func.secret_manager_func import get_secret, list_secrets
 
 def main():
-    # Get inputs
-    secret_name = get_input("secret_name: ")
+    # Check if secret name is provided as argument
+    if len(sys.argv) > 1:
+        secret_name = sys.argv[1]
+    else:
+        # List available secrets
+        print("Available secrets:")
+        list_secrets()
+        secret_name = input("Enter secret name: ")
+    
     res = get_secret(secret_name)
 
     # Check if the secret is a JSON string and parse it

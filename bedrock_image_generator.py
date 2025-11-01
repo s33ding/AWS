@@ -2,6 +2,7 @@ import boto3
 import json
 import base64
 import os
+import random
 from datetime import datetime
 
 def generate_images():
@@ -25,7 +26,8 @@ def generate_images():
             "numberOfImages": num_images,
             "quality": "standard",
             "width": 1024,
-            "height": 1024
+            "height": 1024,
+            "seed": random.randint(0, 2147483647)
         }
     })
     

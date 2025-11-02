@@ -12,8 +12,11 @@ text = get_input("text:")
 
 lang_code = comprehend_text(text=text)
 
-# Extract the language code from the Comprehend response
-res = translate_text(text, lang_code)
+# Translate English to Portuguese, non-English to English
+if lang_code == 'en':
+    res = translate_text(text, lang_code, 'pt')
+else:
+    res = translate_text(text, lang_code, 'en')
 
 print("\nsource language:",lang_code)
 print("text:",text)

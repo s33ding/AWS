@@ -160,8 +160,8 @@ def dynamodb_to_dataframe(table_name):
     return df
 
 
-def empty_dynamodb_table(table_name, region_name='us-east-1', reverse=False, max_workers=10):
-    dynamodb = boto3.resource('dynamodb', region_name=region_name)
+def empty_dynamodb_table(table_name, reverse=False, max_workers=10):
+    dynamodb = boto3.resource('dynamodb')
     table = dynamodb.Table(table_name)
 
     print(f"Scanning table '{table_name}'...")

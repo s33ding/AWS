@@ -2,7 +2,7 @@ import boto3
 import config
 
 # Create an SNS client
-sns_client = boto3.client('sns', region_name=config.region_name)
+sns_client = boto3.client('sns')
 
 # Create an SNS topic
 def create_sns_topic(topic_name):

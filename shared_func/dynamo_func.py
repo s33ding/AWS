@@ -128,7 +128,7 @@ def list_keys_from_dynamodb(table_name):
 
 def dynamodb_to_dataframe(table_name):
     # Initialize a Boto3 DynamoDB client
-    dynamodb = boto3.client('dynamodb', region_name="us-east-1")
+    dynamodb = boto3.client('dynamodb')
     # Create an empty list to store the DynamoDB items
     items = []
 

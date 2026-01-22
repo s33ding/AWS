@@ -3,6 +3,7 @@ import configparser
 import os
 import shutil
 import boto3
+import sys
 
 def get_whoami():
     try:
@@ -148,18 +149,29 @@ def main():
     if not profiles:
         return
     
-def main():
-    print_banner()
+    # Check for command line arguments
+    if len(sys.argv) > 1:
+        if len(sys.argv) == 3:
+            # Two arguments: region and profile-name in any order
+            args = sys.argv[1:3]
+            region = next((arg for arg in args if arg.lower() in ['us', 'sa']), None)
+            profile_name = next((arg for arg in args if arg.lower() not in ['us', 'sa']), None)
+            
+            if region and profile_name and profile_name in profiles:
+                update_default_profile(profile_name, profiles)
+                change_region(region)
+                print("\n" + "─" * 40)
+                new_info = get_whoami()
+                print_current_identity(new_info)
+                return
+            else:
+                print("❌ Invalid profile name or region")
+                return
+        else:
+            choice = sys.argv[1]
+    else:
+        choice = show_menu(profiles)
     
-    # Show current identity
-    current_info = get_whoami()
-    print_current_identity(current_info)
-    
-    profiles = get_profiles()
-    if not profiles:
-        return
-    
-    choice = show_menu(profiles)
     action, profile, region = parse_input(choice, profiles)
     
     if action == 'combined':

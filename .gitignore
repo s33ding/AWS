@@ -3,3 +3,11 @@ __pycache__/
 *.swn
 .tmp/
 
+# AWS credentials and config
+.aws/
+credentials*
+config*
+*.pem
+*.key
+*.backup
+

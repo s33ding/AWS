@@ -36,11 +36,11 @@ def list_secrets(region_name='us-east-1', verbose=True):
     # Initialize the Secrets Manager client
     client = boto3.client('secretsmanager', region_name=region_name)
 
-    # Call the list_secrets API
-    response = client.list_secrets()
-
-    # Extract secret names from the response
-    secret_names = [secret['Name'] for secret in response['SecretList']]
+    # Call the list_secrets API with pagination
+    secret_names = []
+    paginator = client.get_paginator('list_secrets')
+    for page in paginator.paginate():
+        secret_names.extend(secret['Name'] for secret in page['SecretList'])
     if verbose:
         for v in secret_names:
             print(v)

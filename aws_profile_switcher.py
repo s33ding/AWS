@@ -5,19 +5,36 @@ import shutil
 import boto3
 import sys
 
+def get_default_endpoint_url():
+    config_path = os.path.expanduser('~/.aws/config')
+    config = configparser.ConfigParser()
+    if os.path.exists(config_path):
+        config.read(config_path)
+    return config.get('default', 'endpoint_url', fallback=None)
+
 def get_whoami():
     try:
         session = boto3.Session()
-        sts_client = session.client('sts')
-        identity = sts_client.get_caller_identity()
-        region = session.region_name or "us-east-1"
-        
-        return {
-            'account': identity['Account'],
-            'user_id': identity['UserId'],
-            'arn': identity['Arn'],
-            'region': region
-        }
+        endpoint_url = get_default_endpoint_url()
+        if endpoint_url:
+            s3 = session.client('s3', endpoint_url=endpoint_url)
+            buckets = s3.list_buckets()
+            return {
+                'endpoint': endpoint_url,
+                'buckets': len(buckets.get('Buckets', [])),
+                'type': 's3-compatible'
+            }
+        else:
+            sts_client = session.client('sts')
+            identity = sts_client.get_caller_identity()
+            region = session.region_name or "us-east-1"
+            return {
+                'account': identity['Account'],
+                'user_id': identity['UserId'],
+                'arn': identity['Arn'],
+                'region': region,
+                'type': 'aws'
+            }
     except Exception as e:
         return {'error': str(e)}
 
@@ -26,16 +43,25 @@ def print_banner():
     print("🔄 AWS Profile Switcher")
     print("=" * 60)
 
+def mask_sensitive(value, show_last=4):
+    if not value or len(value) <= show_last:
+        return '*' * len(value)
+    return '*' * (len(value) - show_last) + value[-show_last:]
+
 def print_current_identity(info):
     if 'error' in info:
         print(f"❌ Error getting identity: {info['error']}")
         return
     
     print(f"✅ Current Identity:")
-    print(f"   Account: {info['account']}")
-    print(f"   User:    {info['user_id']}")
-    print(f"   ARN:     {info['arn']}")
-    print(f"   Region:  {info['region']}")
+    if info.get('type') == 's3-compatible':
+        print(f"   Endpoint: {info['endpoint']}")
+        print(f"   Buckets:  {info['buckets']}")
+    else:
+        print(f"   Account: {info['account']}")
+        print(f"   User:    {info['user_id']}")
+        print(f"   ARN:     {info['arn']}")
+        print(f"   Region:  {info['region']}")
 
 def get_profiles():
     creds_path = os.path.expanduser('~/.aws/credentials')
@@ -45,7 +71,18 @@ def get_profiles():
     
     config = configparser.ConfigParser()
     config.read(creds_path)
-    return {section: dict(config[section]) for section in config.sections() if section != 'default'}
+    
+    profiles = {}
+    for section in config.sections():
+        if section != 'default':
+            profile_data = {}
+            for key, value in config[section].items():
+                if 'key' in key.lower() or 'token' in key.lower():
+                    profile_data[key] = value
+                else:
+                    profile_data[key] = value
+            profiles[section] = profile_data
+    return profiles
 
 def show_menu(profiles):
     print("\n" + "─" * 40)
@@ -87,6 +124,7 @@ def change_region(region_code):
 
 def update_default_profile(selected_profile, profiles):
     creds_path = os.path.expanduser('~/.aws/credentials')
+    config_path = os.path.expanduser('~/.aws/config')
     backup_path = f"{creds_path}.backup"
     
     shutil.copy2(creds_path, backup_path)
@@ -103,6 +141,23 @@ def update_default_profile(selected_profile, profiles):
     
     with open(creds_path, 'w') as f:
         config.write(f)
+    
+    # Sync endpoint_url in config
+    aws_config = configparser.ConfigParser()
+    if os.path.exists(config_path):
+        aws_config.read(config_path)
+    if 'default' not in aws_config:
+        aws_config.add_section('default')
+    
+    profile_section = f'profile {selected_profile}'
+    endpoint = aws_config.get(profile_section, 'endpoint_url', fallback=None)
+    if endpoint:
+        aws_config.set('default', 'endpoint_url', endpoint)
+    elif aws_config.has_option('default', 'endpoint_url'):
+        aws_config.remove_option('default', 'endpoint_url')
+    
+    with open(config_path, 'w') as f:
+        aws_config.write(f)
     
     print(f"\n🔄 Switched to profile: {selected_profile}")
 

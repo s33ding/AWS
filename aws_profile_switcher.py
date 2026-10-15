@@ -122,6 +122,13 @@ def change_region(region_code):
     print(f"\n🌎 Region changed to: {new_region}")
     return True
 
+def get_profile_default_region(profile_name):
+    """Return the default region for a profile. nlbs uses sa-east-1, others use us-east-1."""
+    profile_region_map = {
+        'nlbs': 'sa-east-1',
+    }
+    return profile_region_map.get(profile_name.lower(), 'us-east-1')
+
 def update_default_profile(selected_profile, profiles):
     creds_path = os.path.expanduser('~/.aws/credentials')
     config_path = os.path.expanduser('~/.aws/config')
@@ -156,10 +163,15 @@ def update_default_profile(selected_profile, profiles):
     elif aws_config.has_option('default', 'endpoint_url'):
         aws_config.remove_option('default', 'endpoint_url')
     
+    # Auto-set region based on profile
+    default_region = get_profile_default_region(selected_profile)
+    aws_config.set('default', 'region', default_region)
+    
     with open(config_path, 'w') as f:
         aws_config.write(f)
     
     print(f"\n🔄 Switched to profile: {selected_profile}")
+    print(f"🌎 Region auto-set to: {default_region}")
 
 def parse_input(choice, profiles):
     import re

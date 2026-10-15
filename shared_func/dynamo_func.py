@@ -126,6 +126,27 @@ def list_keys_from_dynamodb(table_name):
         print(f"Error: {e}")
         return []
 
+def _deserialize_value(value):
+    """Deserialize a single DynamoDB typed value."""
+    if 'S' in value:
+        return value['S']
+    elif 'N' in value:
+        return float(value['N'])
+    elif 'BOOL' in value:
+        return value['BOOL']
+    elif 'NULL' in value:
+        return None
+    elif 'L' in value:
+        return [_deserialize_value(v) for v in value['L']]
+    elif 'M' in value:
+        return {k: _deserialize_value(v) for k, v in value['M'].items()}
+    elif 'SS' in value:
+        return value['SS']
+    elif 'NS' in value:
+        return [float(n) for n in value['NS']]
+    return str(value)
+
+
 def dynamodb_to_dataframe(table_name):
     # Initialize a Boto3 DynamoDB client
     dynamodb = boto3.client('dynamodb')
@@ -148,10 +169,7 @@ def dynamodb_to_dataframe(table_name):
     for item in items:
         extracted_item = {}
         for key, value in item.items():
-            if 'S' in value:
-                extracted_item[key] = value['S']
-            elif 'N' in value:
-                extracted_item[key] = float(value['N'])
+            extracted_item[key] = _deserialize_value(value)
         extracted_data.append(extracted_item)
 
     # Convert the extracted data to a Pandas DataFrame

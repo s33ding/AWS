@@ -11,3 +11,9 @@ config*
 *.key
 *.backup
 
+# Local environment (keep .env-template committed)
+.env
+
+# Local archives
+*.zip
+

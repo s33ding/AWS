@@ -1,5 +1,6 @@
 boto3
 pandas
 awscli
+python-dotenv
 #awsglue
 

@@ -90,3 +90,28 @@ def delete_ssm_parameter(parameter_name):
     response = ssm_client.delete_parameter(**params)
     return response
 
+
+def list_ssm_parameters(path='/'):
+    """
+    Lists custom parameters from AWS Systems Manager Parameter Store
+
+    Args:
+    - path (str): the parameter path to filter by (default: '/')
+
+    Returns:
+    - parameters (list): list of parameter names under the specified path
+    """
+    ssm_client = boto3.client('ssm')
+
+    params = {'Path': path, 'Recursive': True, 'WithDecryption': False}
+    parameters = []
+
+    while True:
+        response = ssm_client.get_parameters_by_path(**params)
+        parameters.extend(response['Parameters'])
+        if 'NextToken' in response:
+            params['NextToken'] = response['NextToken']
+        else:
+            break
+
+    return parameters

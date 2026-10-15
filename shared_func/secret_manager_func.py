@@ -23,18 +23,19 @@ def get_secret(secret_name):
     
     return dct
 
-def list_secrets(region_name='us-east-1', verbose=True):
+def list_secrets(region_name=None, verbose=True):
     """
     List secrets in AWS Secrets Manager.
 
     Args:
-    region_name (str): AWS region where the secrets manager is located. Default is 'us-east-1'.
+    region_name (str): AWS region where the secrets manager is located. Default is None (uses AWS config).
 
     Returns:
     list: List of secret names.
     """
-    # Initialize the Secrets Manager client
-    client = boto3.client('secretsmanager', region_name=region_name)
+    # Initialize the Secrets Manager client (region resolved from AWS config if not provided)
+    session = boto3.session.Session()
+    client = session.client('secretsmanager', region_name=region_name) if region_name else session.client('secretsmanager')
 
     # Call the list_secrets API with pagination
     secret_names = []
@@ -101,19 +102,20 @@ def create_secret(secret_name, json_path):
 
     return response
 
-def delete_secret(secret_name, region_name='us-east-1'):
+def delete_secret(secret_name, region_name=None):
     """
     Delete a secret from AWS Secrets Manager.
 
     Args:
     secret_name (str): Name of the secret to delete.
-    region_name (str): AWS region where the secrets manager is located. Default is 'us-east-1'.
+    region_name (str): AWS region where the secrets manager is located. Default is None (uses AWS config).
 
     Returns:
     dict: Response from the Secrets Manager API.
     """
-    # Initialize the Secrets Manager client
-    client = boto3.client('secretsmanager', region_name=region_name)
+    # Initialize the Secrets Manager client (region resolved from AWS config if not provided)
+    session = boto3.session.Session()
+    client = session.client('secretsmanager', region_name=region_name) if region_name else session.client('secretsmanager')
 
     # Call the delete_secret API
     response = client.delete_secret(

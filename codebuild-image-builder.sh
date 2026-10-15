@@ -1,8 +1,8 @@
 #!/bin/bash
 
 # === CONFIGURATION ===
-ACCOUNT_ID="248189947068"
 REGION="us-east-1"
+ACCOUNT_ID="$(aws sts get-caller-identity --query Account --output text)"
 REPO_NAME="codebuild-tools"
 IMAGE_TAG="latest"
 ECR_URI="$ACCOUNT_ID.dkr.ecr.$REGION.amazonaws.com/$REPO_NAME"

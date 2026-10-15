@@ -9,8 +9,14 @@ sqs = boto3.client('sqs')
 logger = logging.getLogger()
 logger.setLevel(logging.INFO)
 
-# SQS queue URL (make configurable if you like)
-SQS_QUEUE_URL = "https://sqs.us-east-1.amazonaws.com/248189947068/test-sqs-queue"
+# Build the SQS queue URL from the current (default) AWS identity
+def _default_queue_url(queue_name="test-sqs-queue"):
+    session = boto3.session.Session()
+    region = session.region_name or 'us-east-1'
+    account_id = boto3.client('sts').get_caller_identity()['Account']
+    return f"https://sqs.{region}.amazonaws.com/{account_id}/{queue_name}"
+
+SQS_QUEUE_URL = _default_queue_url()
 
 def forward_sns_to_sqs(event, context, queue_url=SQS_QUEUE_URL):
     """

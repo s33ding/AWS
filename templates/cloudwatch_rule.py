@@ -28,8 +28,12 @@ def create_cloudwatch_rule(rule_name, target_lambda_arn, delay_seconds):
         print(f"Error adding target: {e}")
 
 if __name__ == "__main__":
-    # Replace with your AWS Lambda ARN and customize the rule settings
-    target_lambda_arn = 'arn:aws:lambda:us-east-1:326668682603:function:dados_disponibilidade_porto_rdqa'
+    # Build the Lambda ARN from the current (default) AWS identity
+    sts = boto3.client('sts')
+    account_id = sts.get_caller_identity()['Account']
+    region = boto3.session.Session().region_name or 'us-east-1'
+    function_name = 'dados_disponibilidade_porto_rdqa'
+    target_lambda_arn = f'arn:aws:lambda:{region}:{account_id}:function:{function_name}'
     rule_name = 'DelayedInvocationRule'
     delay_seconds = 200  
     create_cloudwatch_rule(rule_name, target_lambda_arn, delay_seconds)
